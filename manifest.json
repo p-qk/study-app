@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "تطبيق التأسيس الأكاديمي",
+  "short_name": "التأسيس",
+  "description": "إدارة خطة التأسيس الأكاديمي والمهني في علوم الحاسوب والأمن السيبراني",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#11161d",
+  "theme_color": "#2f6fed",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
