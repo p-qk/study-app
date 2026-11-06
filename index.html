@@ -13,15 +13,94 @@
   <link rel="stylesheet" href="css/base.css">
 </head>
 <body>
-  <main class="card">
-    <h1>تطبيق التأسيس الأكاديمي</h1>
-    <p>المرحلة 2: التطبيق قابل للتثبيت.</p>
-    <p id="today-date" class="muted"></p>
-    <p id="mode-status" class="muted"></p>
-    <p id="net-status" class="muted"></p>
-    <p id="sw-status" class="muted"></p>
-    <p class="muted en" lang="en" dir="ltr">Computer Science &amp; Cybersecurity Foundation</p>
-  </main>
+  <div class="wrap">
+
+    <!-- شاشة التحميل -->
+    <section id="loading" class="card">
+      <h1>تطبيق التأسيس الأكاديمي</h1>
+      <p class="muted">جارٍ التحميل...</p>
+    </section>
+
+    <!-- شاشة الحساب: تسجيل الدخول / إنشاء حساب / كلمة مرور جديدة -->
+    <section id="auth-view" class="card" hidden>
+      <h1>تطبيق التأسيس الأكاديمي</h1>
+
+      <div id="auth-tabs" class="tabs">
+        <button type="button" id="tab-login" class="tab active">تسجيل الدخول</button>
+        <button type="button" id="tab-signup" class="tab">إنشاء حساب</button>
+      </div>
+
+      <p id="auth-message" class="message" role="status" hidden></p>
+
+      <form id="login-form" class="form" novalidate>
+        <div class="field">
+          <label for="login-email">البريد الإلكتروني</label>
+          <input id="login-email" type="email" dir="ltr" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="login-password">كلمة المرور</label>
+          <input id="login-password" type="password" dir="ltr" autocomplete="current-password" required>
+        </div>
+        <button type="submit" id="login-btn" class="btn primary">دخول</button>
+        <button type="button" id="forgot-btn" class="link-btn">نسيت كلمة المرور؟</button>
+      </form>
+
+      <form id="signup-form" class="form" novalidate hidden>
+        <div class="field">
+          <label for="signup-email">البريد الإلكتروني</label>
+          <input id="signup-email" type="email" dir="ltr" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="signup-password">كلمة المرور (8 أحرف على الأقل)</label>
+          <input id="signup-password" type="password" dir="ltr" autocomplete="new-password" required>
+        </div>
+        <div class="field">
+          <label for="signup-password2">تأكيد كلمة المرور</label>
+          <input id="signup-password2" type="password" dir="ltr" autocomplete="new-password" required>
+        </div>
+        <button type="submit" id="signup-btn" class="btn primary">إنشاء الحساب</button>
+      </form>
+
+      <form id="recovery-form" class="form" novalidate hidden>
+        <h2>تعيين كلمة مرور جديدة</h2>
+        <div class="field">
+          <label for="recovery-password">كلمة المرور الجديدة (8 أحرف على الأقل)</label>
+          <input id="recovery-password" type="password" dir="ltr" autocomplete="new-password" required>
+        </div>
+        <div class="field">
+          <label for="recovery-password2">تأكيد كلمة المرور الجديدة</label>
+          <input id="recovery-password2" type="password" dir="ltr" autocomplete="new-password" required>
+        </div>
+        <button type="submit" id="recovery-btn" class="btn primary">حفظ كلمة المرور</button>
+      </form>
+    </section>
+
+    <!-- شاشة التطبيق بعد تسجيل الدخول (مؤقتة في هذه المرحلة) -->
+    <section id="app-view" class="card" hidden>
+      <h1>تطبيق التأسيس الأكاديمي</h1>
+      <p id="app-message" class="message" role="status" hidden></p>
+      <p>تم تسجيل الدخول بنجاح.</p>
+      <p class="muted">الحساب: <span id="account-email" dir="ltr"></span></p>
+      <p id="limited-note" class="message info" hidden>
+        الجلسة محفوظة على هذا الجهاز. ستُجدَّد تلقائياً عند عودة الإنترنت.
+      </p>
+      <button type="button" id="logout-btn" class="btn">تسجيل الخروج</button>
+    </section>
+
+    <!-- حالة النظام (للاختبار) -->
+    <section class="card status">
+      <p id="today-date" class="muted"></p>
+      <p id="mode-status" class="muted"></p>
+      <p id="net-status" class="muted"></p>
+      <p id="sw-status" class="muted"></p>
+      <p class="muted en" lang="en" dir="ltr">Computer Science &amp; Cybersecurity Foundation</p>
+    </section>
+
+  </div>
+
+  <script src="js/vendor/supabase.js" defer></script>
+  <script src="js/config.js" defer></script>
+  <script src="js/auth.js" defer></script>
   <script src="js/app.js" defer></script>
 </body>
 </html>
