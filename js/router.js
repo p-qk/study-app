@@ -45,6 +45,27 @@
       link.href = "#/" + route.id;
       link.dataset.route = route.id;
 
+      const icons = {
+        dashboard: "⌂",
+        today: "◷",
+        plan: "▦",
+        subjects: "◇",
+        english: "Aa",
+        review: "↻",
+        labs: "⌘",
+        progress: "◒",
+        reports: "▤",
+        notes: "✎",
+        settings: "⚙",
+      };
+      const icon = document.createElement("span");
+      icon.className = "nav-icon";
+      icon.setAttribute("aria-hidden", "true");
+      icon.textContent = icons[route.id] || "•";
+
+      const copy = document.createElement("span");
+      copy.className = "nav-copy";
+
       const label = document.createElement("span");
       label.textContent = route.title;
       const en = document.createElement("small");
@@ -52,8 +73,10 @@
       en.dir = "ltr";
       en.textContent = route.en;
 
-      link.appendChild(label);
-      link.appendChild(en);
+      copy.appendChild(label);
+      copy.appendChild(en);
+      link.appendChild(icon);
+      link.appendChild(copy);
       nav.appendChild(link);
     });
   }
@@ -106,6 +129,11 @@
       body.appendChild(p);
     }
 
+    body.classList.remove("route-enter");
+    // إعادة تشغيل الحركة عند الانتقال، حتى عند تحديث الصفحة الحالية.
+    void body.offsetWidth;
+    body.classList.add("route-enter");
+
     setNavOpen(false);
     window.scrollTo(0, 0);
     $("page").focus({ preventScroll: true });
@@ -118,6 +146,13 @@
     });
     $("overlay").addEventListener("click", function () {
       setNavOpen(false);
+    });
+    $("nav").addEventListener("click", function (event) {
+      const link = event.target.closest("a[data-route]");
+      if (link && document.body.classList.contains("nav-open")) {
+        // النقر على الصفحة الحالية لا يطلق hashchange، لذلك نغلق القائمة هنا أيضاً.
+        setNavOpen(false);
+      }
     });
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape" && document.body.classList.contains("nav-open")) {

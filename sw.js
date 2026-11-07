@@ -1,6 +1,6 @@
 // Service Worker - تطبيق التأسيس الأكاديمي
 // عند تغيير أي ملف من ملفات التطبيق الأساسية، يُنصح برفع رقم الإصدار أدناه.
-const CACHE_VERSION = "v3";
+const CACHE_VERSION = "v6";
 const CACHE_NAME = "study-app-" + CACHE_VERSION;
 
 const APP_SHELL = [
@@ -14,6 +14,10 @@ const APP_SHELL = [
   "./js/theme.js",
   "./js/router.js",
   "./js/pages/placeholders.js",
+  "./js/study-plan.js",
+  "./js/timer.js",
+  "./js/pages/study.js",
+  "./data/plan-index.json",
   "./js/pages/settings.js",
   "./js/app.js",
   "./icons/icon-192.png",
