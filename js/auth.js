@@ -256,6 +256,23 @@
     return remote;
   }
 
+  async function readActiveTimer(userId) {
+    const result = await client.from("active_timer").select("session_key,status,segment_started_at,accumulated_seconds,version")
+      .eq("user_id", userId).maybeSingle();
+    if (result.error) throw result.error;
+    return result.data;
+  }
+
+  async function writeActiveTimer(userId, version, row) {
+    const table = client.from("active_timer");
+    const write = version == null
+      ? table.upsert({ ...row, user_id: userId }, { onConflict: "user_id", ignoreDuplicates: true })
+      : table.update(row).eq("user_id", userId).eq("version", version);
+    const result = await write.select("version").maybeSingle();
+    if (result.error) throw result.error;
+    return result.data;
+  }
+
   window.Auth = {
     urlInfo,
     getInitialUser,
@@ -267,5 +284,7 @@
     onChange,
     toUser,
     syncCompletions,
+    readActiveTimer,
+    writeActiveTimer,
   };
 })();

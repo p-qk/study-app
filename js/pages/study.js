@@ -87,9 +87,14 @@
       }
       syncing = true;
       try {
-        await timer.sync();
+        const result = await timer.sync();
         if (active) {
-          syncStatus.textContent = "تمت مزامنة الجلسات المكتملة.";
+          syncStatus.textContent = {
+            ok: "تمت مزامنة التقدّم والمؤقت.",
+            conflict: "تغيّر المؤقت على جهاز آخر. عُرضت حالته المحفوظة على الحساب.",
+            retry: "تغيّر المؤقت أثناء المزامنة. ستتم إعادة المحاولة.",
+            "other-plan": "المؤقت على الحساب مرتبط بخطة أخرى.",
+          }[result];
           refresh();
         }
       } catch (error) {
@@ -148,7 +153,7 @@
                     if (!active) return;
                     message.hidden = true;
                     refresh();
-                    if (action === "complete") sync();
+                    sync();
                   } catch (error) {
                     if (!active) return;
                     message.textContent = "تعذّر حفظ التغيير. " + error.message;
