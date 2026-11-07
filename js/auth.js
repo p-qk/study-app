@@ -273,6 +273,29 @@
     return result.data;
   }
 
+  async function listReviews(userId) {
+    const rows = [];
+    for (let offset = 0; ; offset += 500) {
+      const result = await client.from("review_items")
+        .select("item_key,stage,next_review_at,version,status")
+        .eq("user_id", userId).order("item_key").range(offset, offset + 499);
+      if (result.error) throw result.error;
+      rows.push(...result.data);
+      if (result.data.length < 500) return rows;
+    }
+  }
+
+  async function saveReview(userId, itemKey, version, fields) {
+    const table = client.from("review_items");
+    const request = version == null
+      ? table.upsert({ ...fields, user_id: userId, item_key: itemKey, session_key: itemKey },
+        { onConflict: "user_id,item_key", ignoreDuplicates: true })
+      : table.update(fields).eq("user_id", userId).eq("item_key", itemKey).eq("version", version);
+    const result = await request.select("item_key").maybeSingle();
+    if (result.error) throw result.error;
+    return Boolean(result.data);
+  }
+
   window.Auth = {
     urlInfo,
     getInitialUser,
@@ -286,5 +309,7 @@
     syncCompletions,
     readActiveTimer,
     writeActiveTimer,
+    listReviews,
+    saveReview,
   };
 })();
