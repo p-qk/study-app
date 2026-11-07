@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>اختبار عزل البيانات (RLS) - مؤقت</title>
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    .results { list-style: none; margin: 16px 0 0; padding: 0; text-align: start; }
+    .results li { padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+    .results .ok::before { content: "✔ "; color: var(--success); }
+    .results .bad::before { content: "✘ "; color: var(--danger); }
+    .results .skip::before { content: "– "; color: var(--muted); }
+    .results .detail { display: block; font-size: 0.82rem; color: var(--muted); direction: ltr; text-align: left; }
+    .results .group { font-weight: 700; margin-top: 10px; border-bottom: 2px solid var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card">
+      <h1>اختبار عزل البيانات (RLS)</h1>
+      <p class="muted">صفحة مؤقتة. تسجّل الدخول بحسابين وتتأكد أن كل حساب لا يرى بيانات الآخر ولا يعدّلها. لا تحفظ كلمات المرور، وتحذف بيانات الاختبار بعد انتهائها.</p>
+      <form id="test-form" class="form" novalidate>
+        <div class="field"><label for="a-email">الحساب A: البريد</label><input id="a-email" type="email" dir="ltr" autocomplete="off"></div>
+        <div class="field"><label for="a-pass">الحساب A: كلمة المرور</label><input id="a-pass" type="password" dir="ltr" autocomplete="off"></div>
+        <div class="field"><label for="b-email">الحساب B: البريد</label><input id="b-email" type="email" dir="ltr" autocomplete="off"></div>
+        <div class="field"><label for="b-pass">الحساب B: كلمة المرور</label><input id="b-pass" type="password" dir="ltr" autocomplete="off"></div>
+        <button type="submit" id="run-btn" class="btn primary">ابدأ الاختبار</button>
+      </form>
+      <p id="summary" class="message" hidden></p>
+      <ul id="results" class="results"></ul>
+    </section>
+  </div>
+
+  <script src="js/vendor/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script>
+  (function () {
+    "use strict";
+    var cfg = window.APP_CONFIG;
+    var $ = function (id) { return document.getElementById(id); };
+    var list = $("results");
+    var passCount = 0, failCount = 0;
+
+    function addLine(cls, text, detail) {
+      var li = document.createElement("li");
+      li.className = cls;
+      li.textContent = text;
+      if (detail) {
+        var d = document.createElement("span");
+        d.className = "detail";
+        d.textContent = detail;
+        li.appendChild(d);
+      }
+      list.appendChild(li);
+    }
+    function group(title) { addLine("group", title); }
+    function check(name, condition, detail) {
+      if (condition) { passCount++; addLine("ok", name); }
+      else { failCount++; addLine("bad", name, detail || ""); }
+    }
+    function errText(e) { return e ? ((e.code || "") + " " + (e.message || "")).trim() : "no error"; }
+    // الرفض الحقيقي (RLS أو الصلاحيات) وليس مجرد فشل في الاتصال
+    function isDenied(e) {
+      if (!e) { return false; }
+      var m = String(e.message || "").toLowerCase();
+      return e.code === "42501" || e.code === "PGRST301" || e.code === "PGRST302" ||
+        m.indexOf("permission denied") !== -1 || m.indexOf("row-level security") !== -1;
+    }
+    function isNetwork(e) { return !!e && !e.code && /fetch|network|load failed/i.test(String(e.message || "")); }
+    // محجوب = رُفض صراحة، أو لم يتأثر أي صف
+    function blocked(res) {
+      if (res.error) { return isDenied(res.error); }
+      return Array.isArray(res.data) && res.data.length === 0;
+    }
+
+    function newClient() {
+      return window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, {
+        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+      });
+    }
+
+    var T = {
+      user_settings:    { make: function (u) { return { user_id: u, theme: "dark" }; }, patch: { theme: "light" }, same: function (r) { return r.theme === "dark"; } },
+      active_timer:     { make: function (u) { return { user_id: u, status: "idle", accumulated_seconds: 0 }; }, patch: { accumulated_seconds: 999 }, same: function (r) { return r.accumulated_seconds === 0; } },
+      session_progress: { make: function (u) { return { user_id: u, session_key: "rlstest-d1-s1", status: "in_progress" }; }, patch: { status: "not_started" }, same: function (r) { return r.status === "in_progress"; } },
+      review_items:     { make: function (u) { return { user_id: u, item_key: "rlstest-item", next_review_at: "2026-11-10" }; }, patch: { difficulty: 5 }, same: function (r) { return r.difficulty === 3; } },
+      notes:            { make: function (u) { return { user_id: u, id: ids.note, title: "rlstest A", body: "سر A" }; }, patch: { body: "hacked" }, same: function (r) { return r.body === "سر A"; } },
+      time_segments:    { make: function (u) { return { user_id: u, id: ids.seg, session_key: "rlstest-d1-s1", started_at: "2026-11-07T10:00:00Z", ended_at: "2026-11-07T10:01:00Z", seconds: 60 }; }, patch: { seconds: 5 }, same: function (r) { return r.seconds === 60; } },
+      review_log:       { make: function (u) { return { user_id: u, id: ids.log, item_key: "rlstest-item", result: "good" }; }, patch: { result: "forgot" }, same: function (r) { return r.result === "good"; } }
+    };
+    var ids = {};
+    var NAMES = Object.keys(T);
+
+    function rid() { return window.crypto.randomUUID(); }
+
+    async function signIn(client, email, password, label) {
+      var res = await client.auth.signInWithPassword({ email: email, password: password });
+      if (res.error) { throw new Error("تعذر تسجيل دخول الحساب " + label + ": " + errText(res.error)); }
+      return res.data.user;
+    }
+
+    async function cleanup(A, B, uidA, uidB) {
+      var del = {
+        session_progress: function (q) { return q.like("session_key", "rlstest-%"); },
+        review_items: function (q) { return q.like("item_key", "rlstest-%"); },
+        notes: function (q) { return q.like("title", "rlstest%"); },
+        time_segments: function (q) { return q.like("session_key", "rlstest-%"); },
+        review_log: function (q) { return q.like("item_key", "rlstest-%"); }
+      };
+      var clients = [[A, uidA], [B, uidB]];
+      for (var c = 0; c < clients.length; c++) {
+        for (var n in del) {
+          await del[n](clients[c][0].from(n).delete().eq("user_id", clients[c][1]));
+        }
+      }
+      return created;
+    }
+
+    var created = {};
+
+    async function run(a, b) {
+      list.innerHTML = ""; passCount = 0; failCount = 0;
+      ids = { note: rid(), seg: rid(), log: rid() };
+      created = {};
+      var A = newClient(), B = newClient(), N = newClient();
+      var uA, uB;
+
+      group("0) تسجيل الدخول");
+      var userA = await signIn(A, a.email, a.pass, "A");
+      var userB = await signIn(B, b.email, b.pass, "B");
+      uA = userA.id; uB = userB.id;
+      check("الحسابان مختلفان", uA !== uB, "استخدم حسابين مختلفين");
+      if (uA === uB) { return; }
+
+      try {
+        await cleanup(A, B, uA, uB);
+
+        group("1) الحساب A ينشئ بياناته في الجداول السبعة");
+        for (var i = 0; i < NAMES.length; i++) {
+          var name = NAMES[i];
+          if (name === "user_settings" || name === "active_timer") {
+            var ex = await A.from(name).select("user_id");
+            if (ex.error) { check("قراءة " + name, false, errText(ex.error)); continue; }
+            if (ex.data.length > 0) { addLine("skip", name + ": فيه بيانات حقيقية، تم تخطيه حفاظاً عليها"); continue; }
+          }
+          var ins = await A.from(name).insert(T[name].make(uA));
+          if (isNetwork(ins.error)) { throw new Error("تعذر الاتصال بالخادم أثناء الاختبار. تحقق من الإنترنت وأعد المحاولة."); }
+          if (!ins.error) { created[name] = true; }
+          check("A يضيف صفاً في " + name, !ins.error, errText(ins.error));
+        }
+        var tested = NAMES.filter(function (n) { return created[n]; });
+
+        group("2) A يقرأ بياناته");
+        for (i = 0; i < tested.length; i++) {
+          var r = await A.from(tested[i]).select("*").eq("user_id", uA);
+          check("A يرى صفه في " + tested[i], !r.error && r.data.length === 1, errText(r.error) + " rows=" + (r.data ? r.data.length : "-"));
+        }
+
+        group("3) B لا يرى بيانات A");
+        for (i = 0; i < tested.length; i++) {
+          var rb = await B.from(tested[i]).select("*");
+          var leaked = rb.data ? rb.data.filter(function (x) { return x.user_id === uA; }).length : 0;
+          check("B لا يرى صفوف A في " + tested[i], !rb.error && leaked === 0, errText(rb.error) + " leaked=" + leaked);
+        }
+
+        group("4) B يحاول تعديل بيانات A");
+        for (i = 0; i < tested.length; i++) {
+          var nm = tested[i];
+          if (nm === "time_segments" || nm === "review_log") {
+            var u2 = await B.from(nm).update(T[nm].patch).eq("user_id", uA).select();
+            check("تعديل B لسجلات A في " + nm + " مرفوض أو لا يؤثر", blocked(u2), errText(u2.error) + " data=" + JSON.stringify(u2.data));
+          } else {
+            var u1 = await B.from(nm).update(T[nm].patch).eq("user_id", uA).select();
+            check("تعديل B لصفوف A في " + nm + " لا يؤثر", blocked(u1), errText(u1.error) + " affected=" + (u1.data ? u1.data.length : "-"));
+          }
+        }
+
+        group("5) B يحاول حذف بيانات A");
+        for (i = 0; i < tested.length; i++) {
+          var d1 = await B.from(tested[i]).delete().eq("user_id", uA).select();
+          check("حذف B لصفوف A في " + tested[i] + " لا يؤثر", blocked(d1), errText(d1.error) + " data=" + JSON.stringify(d1.data));
+        }
+
+        group("6) B يحاول إدخال صفوف باسم A");
+        var fake1 = await B.from("session_progress").insert({ user_id: uA, session_key: "rlstest-fake", status: "in_progress" });
+        check("إدخال صف في session_progress باسم A مرفوض", isDenied(fake1.error), errText(fake1.error));
+        var fake2 = await B.from("notes").insert({ user_id: uA, id: rid(), title: "rlstest fake", body: "x" });
+        check("إدخال ملاحظة باسم A مرفوض", isDenied(fake2.error), errText(fake2.error));
+
+        group("7) B يحاول نقل ملكية صفه إلى A");
+        var own = await B.from("session_progress").insert({ user_id: uB, session_key: "rlstest-b-own", status: "in_progress" });
+        check("B ينشئ صفاً خاصاً به", !own.error, errText(own.error));
+        await B.from("session_progress").update({ user_id: uA }).eq("session_key", "rlstest-b-own");
+        var seeA = await A.from("session_progress").select("session_key").eq("session_key", "rlstest-b-own");
+        check("الصف لم ينتقل إلى A", !seeA.error && seeA.data.length === 0, "A رأى الصف!");
+        var seeB = await B.from("session_progress").select("user_id").eq("session_key", "rlstest-b-own");
+        check("الصف بقي ملكاً لـ B", !seeB.error && seeB.data.length === 1 && seeB.data[0].user_id === uB, errText(seeB.error));
+
+        group("8) التكرار");
+        var dup = await A.from("session_progress").insert({ user_id: uA, session_key: "rlstest-d1-s1", status: "in_progress" });
+        check("تكرار الجلسة نفسها يُرفض", !!dup.error && dup.error.code === "23505", errText(dup.error));
+        var up = await A.from("session_progress").upsert({ user_id: uA, session_key: "rlstest-d1-s1", status: "in_progress" }, { onConflict: "user_id,session_key" });
+        check("upsert لا يُنشئ نسخة مكررة", !up.error, errText(up.error));
+        var cnt = await A.from("session_progress").select("session_key").eq("session_key", "rlstest-d1-s1");
+        check("جلسة واحدة فقط بعد التكرار", !cnt.error && cnt.data.length === 1, "rows=" + (cnt.data ? cnt.data.length : "-"));
+        var seg = await A.from("time_segments").upsert(T.time_segments.make(uA), { onConflict: "user_id,id", ignoreDuplicates: true });
+        check("إعادة إرسال مقطع الوقت نفسه لا تُنشئ نسخة", !seg.error, errText(seg.error));
+        var segc = await A.from("time_segments").select("id").eq("session_key", "rlstest-d1-s1");
+        check("مقطع وقت واحد فقط بعد إعادة الإرسال", !segc.error && segc.data.length === 1, "rows=" + (segc.data ? segc.data.length : "-"));
+
+        group("9) سجلات الوقت والمراجعة لا تُعدَّل حتى من صاحبها");
+        var upSeg = await A.from("time_segments").update({ seconds: 5 }).eq("id", ids.seg).select();
+        check("A لا يستطيع تعديل time_segments", blocked(upSeg), errText(upSeg.error) + " data=" + JSON.stringify(upSeg.data));
+
+        group("10) الزائر غير المسجل");
+        for (i = 0; i < NAMES.length; i++) {
+          var an = await N.from(NAMES[i]).select("*");
+          check("الزائر لا يقرأ " + NAMES[i], blocked(an), errText(an.error) + " data=" + JSON.stringify(an.data));
+        }
+
+        group("11) بيانات A سليمة بعد كل المحاولات");
+        for (i = 0; i < tested.length; i++) {
+          var fin = await A.from(tested[i]).select("*").eq("user_id", uA);
+          var okRow = !fin.error && fin.data.length >= 1 && fin.data.every(function (row) { return T[tested[i]].same(row); });
+          check("صف A في " + tested[i] + " كما هو", okRow, errText(fin.error) + " " + JSON.stringify(fin.data));
+        }
+      } finally {
+        await cleanup(A, B, uA, uB);
+        group("12) التنظيف");
+        var left = 0;
+        for (i = 0; i < NAMES.length; i++) {
+          if (!created[NAMES[i]]) { continue; }
+          if (NAMES[i] === "user_settings" || NAMES[i] === "active_timer") {
+            await A.from(NAMES[i]).delete().eq("user_id", uA);
+          }
+          var chk = await A.from(NAMES[i]).select("user_id").eq("user_id", uA);
+          left += chk.data ? chk.data.length : 0;
+        }
+        check("حُذفت بيانات الاختبار", left === 0, "بقي " + left + " صفاً");
+        await A.auth.signOut();
+        await B.auth.signOut();
+      }
+    }
+
+    $("test-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var btn = $("run-btn");
+      var a = { email: $("a-email").value.trim(), pass: $("a-pass").value };
+      var b = { email: $("b-email").value.trim(), pass: $("b-pass").value };
+      var summary = $("summary");
+      summary.hidden = true;
+      if (!a.email || !a.pass || !b.email || !b.pass) {
+        summary.hidden = false; summary.className = "message error";
+        summary.textContent = "املأ بيانات الحسابين كلها."; return;
+      }
+      btn.disabled = true; btn.textContent = "جارٍ الاختبار...";
+      try {
+        await run(a, b);
+        summary.hidden = false;
+        if (failCount === 0 && passCount > 0) {
+          summary.className = "message success";
+          summary.textContent = "نجحت كل الفحوصات (" + passCount + "). عزل البيانات بين الحسابين سليم.";
+        } else {
+          summary.className = "message error";
+          summary.textContent = "فشل " + failCount + " فحص من " + (passCount + failCount) + ". أرسل لي لقطة شاشة للنتائج.";
+        }
+      } catch (err) {
+        summary.hidden = false; summary.className = "message error";
+        summary.textContent = String(err && err.message ? err.message : err);
+      }
+      btn.disabled = false; btn.textContent = "ابدأ الاختبار";
+      $("a-pass").value = ""; $("b-pass").value = "";
+    });
+  })();
+  </script>
+</body>
+</html>
