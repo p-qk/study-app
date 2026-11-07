@@ -6,50 +6,19 @@
   };
 
   // =====================================================
-  // 1) أسطر الحالة (التاريخ ووضع التشغيل والاتصال)
+  // 1) تسجيل Service Worker (العمل بدون إنترنت وإمكانية التثبيت)
   // =====================================================
-  $("today-date").textContent =
-    "تاريخ اليوم: " +
-    new Date().toLocaleDateString("ar-IQ", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
-  const isStandalone =
-    window.matchMedia("(display-mode: standalone)").matches ||
-    window.navigator.standalone === true;
-  $("mode-status").textContent =
-    "وضع التشغيل: " + (isStandalone ? "نافذة تطبيق مستقلة" : "تبويب متصفح عادي");
-
-  function updateNetworkStatus() {
-    $("net-status").textContent =
-      "الاتصال: " + (navigator.onLine ? "متصل بالإنترنت" : "غير متصل (وضع العمل المحلي)");
-  }
-  window.addEventListener("online", updateNetworkStatus);
-  window.addEventListener("offline", updateNetworkStatus);
-  updateNetworkStatus();
-
-  const swElement = $("sw-status");
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("./sw.js")
-      .then(function () {
-        swElement.textContent = "Service Worker: مسجَّل";
-      })
-      .catch(function (error) {
-        swElement.textContent = "Service Worker: فشل التسجيل";
-        console.error("Service Worker registration failed:", error);
-      });
-  } else {
-    swElement.textContent = "Service Worker: غير مدعوم في هذا المتصفح";
+    navigator.serviceWorker.register("./sw.js").catch(function (error) {
+      console.error("Service Worker registration failed:", error);
+    });
   }
 
   // =====================================================
   // 2) الحسابات
   // =====================================================
   const el = {
+    authWrap: $("auth-wrap"),
     loading: $("loading"),
     authView: $("auth-view"),
     appView: $("app-view"),
@@ -74,7 +43,6 @@
     recoveryBtn: $("recovery-btn"),
     accountEmail: $("account-email"),
     limitedNote: $("limited-note"),
-    logoutBtn: $("logout-btn"),
   };
 
   const state = {
@@ -113,15 +81,18 @@
     }
     el.loading.hidden = true;
     const inApp = Boolean(state.user) && !state.recovery;
+    el.authWrap.hidden = inApp;
     el.authView.hidden = inApp;
     el.appView.hidden = !inApp;
 
     if (inApp) {
       el.accountEmail.textContent = state.user.email;
       el.limitedNote.hidden = !state.limited;
+      window.Router.show(state.user);
       return;
     }
 
+    window.Router.hide();
     el.tabs.hidden = state.recovery;
     el.loginForm.hidden = state.recovery || state.tab !== "login";
     el.signupForm.hidden = state.recovery || state.tab !== "signup";
@@ -281,12 +252,16 @@
       setMessage(el.appMessage, "تم تغيير كلمة المرور بنجاح.", "success");
     });
 
-    // ---------- تسجيل الخروج ----------
-    el.logoutBtn.addEventListener("click", async function () {
+    // ---------- تسجيل الخروج (أي زر يحمل data-action="logout") ----------
+    document.addEventListener("click", async function (event) {
+      const button = event.target.closest('[data-action="logout"]');
+      if (!button || button.disabled) {
+        return;
+      }
       setMessage(el.appMessage, "");
-      setBusy(el.logoutBtn, true, "جارٍ الخروج...");
+      setBusy(button, true, "جارٍ الخروج...");
       const result = await window.Auth.signOut();
-      setBusy(el.logoutBtn, false);
+      setBusy(button, false);
       if (!result.ok) {
         setMessage(el.appMessage, result.message, "error");
         return;

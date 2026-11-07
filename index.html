@@ -10,18 +10,27 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="التأسيس">
+  <script>
+    /* تطبيق المظهر المحفوظ قبل رسم الصفحة لتجنب الوميض */
+    try {
+      var savedTheme = localStorage.getItem("study-app-theme");
+      if (savedTheme === "light" || savedTheme === "dark") {
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      }
+    } catch (e) {}
+  </script>
   <link rel="stylesheet" href="css/base.css">
 </head>
 <body>
-  <div class="wrap">
 
-    <!-- شاشة التحميل -->
+  <!-- ========== شاشات التحميل والحساب ========== -->
+  <div id="auth-wrap" class="wrap">
+
     <section id="loading" class="card">
       <h1>تطبيق التأسيس الأكاديمي</h1>
       <p class="muted">جارٍ التحميل...</p>
     </section>
 
-    <!-- شاشة الحساب: تسجيل الدخول / إنشاء حساب / كلمة مرور جديدة -->
     <section id="auth-view" class="card" hidden>
       <h1>تطبيق التأسيس الأكاديمي</h1>
 
@@ -74,33 +83,47 @@
         <button type="submit" id="recovery-btn" class="btn primary">حفظ كلمة المرور</button>
       </form>
     </section>
+  </div>
 
-    <!-- شاشة التطبيق بعد تسجيل الدخول (مؤقتة في هذه المرحلة) -->
-    <section id="app-view" class="card" hidden>
-      <h1>تطبيق التأسيس الأكاديمي</h1>
+  <!-- ========== هيكل التطبيق بعد تسجيل الدخول ========== -->
+  <div id="app-view" class="shell" hidden>
+
+    <header class="topbar">
+      <button type="button" id="menu-btn" class="icon-btn" aria-label="فتح القائمة"
+              aria-expanded="false" aria-controls="sidebar">
+        <span class="bars" aria-hidden="true"></span>
+      </button>
+      <span id="topbar-title" class="topbar-title"></span>
+    </header>
+
+    <div id="overlay" class="overlay" hidden></div>
+
+    <aside id="sidebar" class="sidebar" aria-label="التنقل الرئيسي">
+      <div class="brand">التأسيس الأكاديمي</div>
+      <nav id="nav" class="nav"></nav>
+      <div class="sidebar-foot">
+        <p class="muted small">الحساب</p>
+        <p id="account-email" class="account-email" dir="ltr"></p>
+        <button type="button" class="btn small" data-action="logout">تسجيل الخروج</button>
+      </div>
+    </aside>
+
+    <main id="page" class="page" tabindex="-1">
       <p id="app-message" class="message" role="status" hidden></p>
-      <p>تم تسجيل الدخول بنجاح.</p>
-      <p class="muted">الحساب: <span id="account-email" dir="ltr"></span></p>
       <p id="limited-note" class="message info" hidden>
         الجلسة محفوظة على هذا الجهاز. ستُجدَّد تلقائياً عند عودة الإنترنت.
       </p>
-      <button type="button" id="logout-btn" class="btn">تسجيل الخروج</button>
-    </section>
-
-    <!-- حالة النظام (للاختبار) -->
-    <section class="card status">
-      <p id="today-date" class="muted"></p>
-      <p id="mode-status" class="muted"></p>
-      <p id="net-status" class="muted"></p>
-      <p id="sw-status" class="muted"></p>
-      <p class="muted en" lang="en" dir="ltr">Computer Science &amp; Cybersecurity Foundation</p>
-    </section>
-
+      <div id="page-body"></div>
+    </main>
   </div>
 
   <script src="js/vendor/supabase.js" defer></script>
   <script src="js/config.js" defer></script>
   <script src="js/auth.js" defer></script>
+  <script src="js/theme.js" defer></script>
+  <script src="js/router.js" defer></script>
+  <script src="js/pages/placeholders.js" defer></script>
+  <script src="js/pages/settings.js" defer></script>
   <script src="js/app.js" defer></script>
 </body>
 </html>
