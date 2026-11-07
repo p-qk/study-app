@@ -17,10 +17,11 @@
     const details = el("details", "", "panel");
     details.appendChild(el("summary", (index + 1) + ". " + session.title));
     details.appendChild(el("p", session.subject + " · " + session.minutes + " دقيقة", "muted"));
+    if (session.trackingOnly) return details;
     [
-      ["الأهداف", session.objectives],
-      ["المفاهيم", session.concepts],
-      ["كلمات البحث", session.keywords],
+      ["ماذا ستستفيد؟", session.objectives],
+      ["ماذا تدرس في هذه الساعة؟", session.concepts],
+      ["ماذا تكتب في بحث يوتيوب؟", session.keywords],
       ["التطبيق العملي", [session.practice]],
       ["المراجعة", [session.review]],
       ["الإنجليزية التقنية", session.english],
@@ -31,6 +32,13 @@
       const list = el("ul");
       values.forEach(function (value) {
         const item = el("li", value);
+        if (values === session.keywords) {
+          const link = el("a", value);
+          link.href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(value);
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          item.replaceChildren(link);
+        }
         item.dir = "auto";
         list.appendChild(item);
       });
@@ -201,18 +209,17 @@
     };
   }
 
-  function showCatalog(container, months, field) {
+  function showCatalog(container, months) {
     const values = new Set();
     months.forEach(function (month) {
       month.days.forEach(function (day) {
         day.sessions.forEach(function (session) {
-          if (field === "subject") values.add(session.subject);
-          else session.english.forEach(function (term) { values.add(term); });
+          values.add(session.subject);
         });
       });
     });
     if (!values.size) {
-      container.appendChild(el("p", "لا توجد مصطلحات إنجليزية في المحتوى المتاح.", "muted"));
+      container.appendChild(el("p", "لا توجد مواد في المحتوى المتاح.", "muted"));
       return;
     }
     const panel = el("section", "", "panel");
@@ -269,10 +276,34 @@
 
   register("plan", "الخطة الدراسية", showPlan);
   register("today", "جلسات اليوم", showToday);
-  register("subjects", "المواد الدراسية", function (container, months) {
-    showCatalog(container, months, "subject");
-  });
-  register("english", "الإنجليزية التقنية", function (container, months) {
-    showCatalog(container, months, "english");
+  register("subjects", "المواد الدراسية", showCatalog);
+  register("english", "اللغة الإنجليزية", function (container, months, userId) {
+    const days = months.flatMap(month => month.days);
+    const sessions = days.flatMap(day => day.sessions);
+    const panel = el("section", "", "panel");
+    const status = el("p", "");
+    const list = el("ul", "");
+    panel.append(status, list);
+    container.appendChild(panel);
+    const local = window.StudyTimer.open(userId, sessions).read().records;
+    const completed = new Set(Object.keys(local).filter(id => local[id].completedAt));
+    function draw() {
+      list.replaceChildren();
+      let count = 0;
+      days.forEach(function (day) {
+        const session = day.sessions.find(item => item.trackingOnly);
+        if (!session || !completed.has(session.id)) return;
+        count++;
+        list.appendChild(el("li", "اليوم " + day.number + " · 60 دقيقة مكتملة"));
+      });
+      status.textContent = count + " من " + days.length + " جلسة إنجليزية مكتملة.";
+    }
+    draw();
+    window.Auth.syncCompletions(userId, []).then(function (rows) {
+      rows.forEach(row => completed.add(row.session_key));
+      draw();
+    }).catch(function () {
+      panel.appendChild(el("p", "يُعرض التقدّم المحفوظ على هذا الجهاز.", "muted"));
+    });
   });
 })();

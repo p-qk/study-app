@@ -52,6 +52,7 @@
               const dayGroup = el("details", "", "panel");
               dayGroup.appendChild(el("summary", "اليوم " + day.number));
               day.sessions.forEach(function (session) {
+                if (session.trackingOnly) return;
                 const lab = el("article", "", "panel");
                 const description = el("p", session.practice);
                 description.dir = "auto";

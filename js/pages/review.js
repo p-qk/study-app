@@ -49,7 +49,8 @@
           });
           const byId = new Map(reviews.map(row => [row.item_key, row]));
           const today = dateKey(Date.now());
-          const items = sessions.filter(session => dates.has(session.id) || byId.has(session.id))
+          const items = sessions.filter(session => !session.trackingOnly &&
+            (dates.has(session.id) || byId.has(session.id)))
             .map(function (session) {
               const review = byId.get(session.id);
               return { session, review, due: review?.next_review_at || dateKey(dates.get(session.id), 1) };

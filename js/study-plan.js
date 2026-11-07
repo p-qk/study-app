@@ -6,6 +6,8 @@
   const dayMs = 86400000;
   const textFields = ["title", "subject", "practice", "review"];
   const listFields = ["objectives", "concepts", "keywords", "english", "resources"];
+  const subjects = ["الشبكات", "الشبكات", "الأمن السيبراني", "اللغة الإنجليزية"];
+  const slots = [1, 2, 6, 7];
 
   function nonEmpty(value) {
     return typeof value === "string" && value.trim().length > 0;
@@ -13,15 +15,15 @@
 
   function readDay(day, number) {
     const sessions = day && day.sessions;
-    if (!day || day.number !== number || !Array.isArray(sessions) || sessions.length !== 5 ||
-        sessions.some(function (session) {
-          return !session ||
-            !textFields.every(function (key) { return nonEmpty(session[key]); }) ||
+    if (!day || day.number !== number || !Array.isArray(sessions) || sessions.length !== subjects.length ||
+        sessions.some(function (session, index) {
+          if (!session || session.subject !== subjects[index] || !nonEmpty(session.title)) return true;
+          if (index === 3) return false;
+          return !textFields.every(function (key) { return nonEmpty(session[key]); }) ||
             !listFields.every(function (key) {
               return Array.isArray(session[key]) && session[key].every(nonEmpty);
-            });
-        }) ||
-        sessions.filter(function (session) { return session.subject === "الشبكات"; }).length !== 2) {
+            }) || !session.objectives.length || !session.concepts.length || !session.keywords.length;
+        })) {
       throw new Error("Invalid study sessions on day " + number);
     }
     return {
@@ -30,8 +32,9 @@
       sessions: sessions.map(function (session, index) {
         return {
           ...session,
-          id: "d" + String(number).padStart(3, "0") + "-s" + (index + 1),
+          id: "d" + String(number).padStart(3, "0") + "-s" + slots[index],
           minutes: 60,
+          trackingOnly: index === 3,
         };
       }),
     };

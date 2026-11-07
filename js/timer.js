@@ -81,7 +81,8 @@
         const version = cloud?.version ?? null;
         const pending = state.timerPending;
         const active = current(state);
-        const cloudIsKnown = !cloud?.session_key || ids.has(cloud.session_key);
+        const cloudIsKnown = !cloud?.session_key || ids.has(cloud.session_key) ||
+          /^d[0-9]{3}-s[3-5]$/.test(cloud.session_key);
         if (!cloudIsKnown) return "other-plan";
 
         if (pending && (pending.id === active?.id || !cloud || cloud.session_key === pending.id)) {

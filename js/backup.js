@@ -4,7 +4,7 @@
   function mount(panel, userId) {
     const progressKey = "study-progress-v1-" + userId;
     const labsKey = "study-labs-v1-" + userId;
-    const validId = id => typeof id === "string" && /^(?:preview-[0-9]+-)?d[0-9]{3}-s[1-5]$/.test(id);
+    const validId = id => typeof id === "string" && /^(?:preview-[0-9]+-)?d[0-9]{3}-s[1-7]$/.test(id);
     const read = (key, fallback) => JSON.parse(localStorage.getItem(key) || fallback);
     const status = document.createElement("p");
     status.setAttribute("role", "status");
