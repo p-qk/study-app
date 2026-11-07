@@ -296,6 +296,29 @@
     return Boolean(result.data);
   }
 
+  async function listNotes(userId) {
+    const rows = [];
+    for (let offset = 0; ; offset += 500) {
+      const result = await client.from("notes").select("id,title,body,version,session_key")
+        .eq("user_id", userId).is("deleted_at", null)
+        .order("updated_at", { ascending: false }).order("id").range(offset, offset + 499);
+      if (result.error) throw result.error;
+      rows.push(...result.data);
+      if (result.data.length < 500) return rows;
+    }
+  }
+
+  async function saveNote(userId, id, version, fields) {
+    const table = client.from("notes");
+    const request = version == null
+      ? table.insert({ ...fields, user_id: userId, id })
+      : table.update(fields).eq("user_id", userId).eq("id", id)
+        .eq("version", version).is("deleted_at", null);
+    const result = await request.select("id").maybeSingle();
+    if (result.error) throw result.error;
+    return Boolean(result.data);
+  }
+
   window.Auth = {
     urlInfo,
     getInitialUser,
@@ -311,5 +334,7 @@
     writeActiveTimer,
     listReviews,
     saveReview,
+    listNotes,
+    saveNote,
   };
 })();
