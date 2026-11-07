@@ -225,6 +225,37 @@
     });
   }
 
+  async function syncCompletions(userId, completions) {
+    function completedRows() {
+      return client.from("session_progress").select("session_key, completed_at")
+        .eq("user_id", userId).eq("status", "completed").order("session_key");
+    }
+    const remote = [];
+    for (let offset = 0; ; offset += 500) {
+      const result = await completedRows().range(offset, offset + 499);
+      if (result.error) throw result.error;
+      remote.push(...result.data);
+      if (result.data.length < 500) break;
+    }
+    const known = new Set(remote.map(function (row) { return row.session_key; }));
+    const pending = completions.filter(function (row) { return !known.has(row.session_key); });
+    if (pending.length) {
+      const rows = pending.map(function (row) {
+        return { ...row, user_id: userId, status: "completed" };
+      });
+      const result = await client.from("session_progress")
+        .upsert(rows, { onConflict: "user_id,session_key", ignoreDuplicates: true });
+      if (result.error) throw result.error;
+      for (const row of pending) {
+        const update = await client.from("session_progress")
+          .update({ status: "completed", completed_at: row.completed_at })
+          .eq("user_id", userId).eq("session_key", row.session_key).neq("status", "completed");
+        if (update.error) throw update.error;
+      }
+    }
+    return remote;
+  }
+
   window.Auth = {
     urlInfo,
     getInitialUser,
@@ -235,5 +266,6 @@
     signOut,
     onChange,
     toUser,
+    syncCompletions,
   };
 })();

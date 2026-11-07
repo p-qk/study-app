@@ -50,7 +50,31 @@
         localStorage.setItem(key, JSON.stringify(state));
       });
     }
-    return { read: read, elapsed: elapsed, current: current, act: act };
+    async function sync() {
+      const records = read().records;
+      const completions = Object.entries(records)
+        .filter(function ([, record]) { return record.completedAt; })
+        .map(function ([id, record]) {
+          return { session_key: id, completed_at: record.completedAt };
+        });
+      const remote = await window.Auth.syncCompletions(userId, completions);
+      await navigator.locks.request(key, function () {
+        const state = read();
+        let changed = false;
+        remote.forEach(function (row) {
+          const record = state.records[row.session_key];
+          if (record?.completedAt) return;
+          state.records[row.session_key] = {
+            seconds: record?.seconds || 0,
+            startedAt: null,
+            completedAt: row.completed_at,
+          };
+          changed = true;
+        });
+        if (changed) localStorage.setItem(key, JSON.stringify(state));
+      });
+    }
+    return { read: read, elapsed: elapsed, current: current, act: act, sync: sync };
   }
   window.StudyTimer = { open: open };
 })();

@@ -70,6 +70,38 @@
     let signature = "";
     let clock = null;
     let completeButton = null;
+    const syncStatus = el("p", "", "muted");
+    syncStatus.setAttribute("role", "status");
+    container.insertBefore(syncStatus, content);
+    let syncing = false;
+    let syncAgain = false;
+    async function sync() {
+      if (!active) return;
+      if (syncing) {
+        syncAgain = true;
+        return;
+      }
+      if (!navigator.onLine) {
+        syncStatus.textContent = "لا يوجد اتصال. التقدّم محفوظ على هذا الجهاز.";
+        return;
+      }
+      syncing = true;
+      try {
+        await timer.sync();
+        if (active) {
+          syncStatus.textContent = "تمت مزامنة الجلسات المكتملة.";
+          refresh();
+        }
+      } catch (error) {
+        if (active) syncStatus.textContent = "تعذّرت المزامنة. سيعيد التطبيق المحاولة تلقائيًا.";
+      } finally {
+        syncing = false;
+        if (syncAgain) {
+          syncAgain = false;
+          sync();
+        }
+      }
+    }
     function refresh() {
       if (!active) return;
       try {
@@ -116,6 +148,7 @@
                     if (!active) return;
                     message.hidden = true;
                     refresh();
+                    if (action === "complete") sync();
                   } catch (error) {
                     if (!active) return;
                     message.textContent = "تعذّر حفظ التغيير. " + error.message;
@@ -145,12 +178,21 @@
       }
     }
     refresh();
+    sync();
     const interval = window.setInterval(refresh, 1000);
+    const syncInterval = window.setInterval(sync, 30000);
     window.addEventListener("storage", refresh);
+    window.addEventListener("online", sync);
+    window.addEventListener("offline", sync);
+    window.addEventListener("focus", sync);
     return function () {
       active = false;
       window.clearInterval(interval);
+      window.clearInterval(syncInterval);
       window.removeEventListener("storage", refresh);
+      window.removeEventListener("online", sync);
+      window.removeEventListener("offline", sync);
+      window.removeEventListener("focus", sync);
     };
   }
 
