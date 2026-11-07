@@ -1,0 +1,2525 @@
+{
+  "title": "الشهر الثاني · بناء الشبكات وحمايتها وتحليل Logs",
+  "days": [
+    {
+      "number": 31,
+      "sessions": [
+        {
+          "title": "تجهيز Packet Tracer وبناء أول مختبر",
+          "subject": "الشبكات",
+          "description": [
+            "سنبدأ الشهر الثاني بتحويل ما فهمته في الشهر الأول إلى شبكة تستطيع بناءها وتغييرها بنفسك. Packet Tracer برنامج من Cisco يحاكي أجهزة الشبكة؛ تستطيع وضع PC وSwitch وربطهما دون شراء أجهزة.",
+            "ستتعرف على مساحة العمل، وقائمة الأجهزة، وأداة اختيار الكابل تلقائيًا. الرابط الأخضر يعني أن الوصلة أصبحت تعمل، لكنه لا يثبت وحده أن إعدادات IP صحيحة أو أن كل الخدمات تعمل.",
+            "خصص أول 20 دقيقة للتجهيز، ثم 30 دقيقة لبناء الشبكة، وآخر 10 دقائق لحفظها وشرح رسمها. إذا استغرق التثبيت الساعة كاملة، أكمل التجهيز قبل الانتقال؛ هدف الجلسة ملف مختبر قابل للفتح."
+          ],
+          "objectives": [
+            "تفتح مختبرًا محفوظًا وتشرح وظيفة كل جهاز ووصلة فيه."
+          ],
+          "concepts": [
+            "Packet Tracer",
+            "PC وSwitch",
+            "حفظ ملف المختبر"
+          ],
+          "keywords": [
+            "شرح بالعربي Cisco Packet Tracer install first network PC switch",
+            "Cisco Packet Tracer install first network PC switch beginner lab"
+          ],
+          "practice": "1. افتح https://www.netacad.com/resources/lab-downloads وسجّل الدخول بحساب Cisco، ثم نزّل Packet Tracer المناسب لنظامك وثبّته. إذا كان موجودًا، افتحه مباشرة.\n2. أنشئ مشروعًا جديدًا، وضع Switch من نوع 2960 وجهازين PC. صِل كل PC بالـ Switch باستخدام أداة الكابل التلقائي وانتظر استقرار الوصلات.\n3. سمِّ الجهازين PC-A وPC-B. أنشئ مجلد month-02-labs واحفظ المشروع باسم day31-lan.pkt، ثم أغلقه وافتحه للتأكد من الحفظ.",
+          "review": "ما الذي يحاكيه Packet Tracer؟ وما الذي لا تستطيع استنتاجه من اللون الأخضر للوصلة وحده؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "إعطاء أجهزة المختبر عناوين IP واختبار الاتصال",
+          "subject": "الشبكات",
+          "description": [
+            "الجهازان موصولان الآن، لكنهما يحتاجان عناوين حتى يتبادلا IP Packets. سنستخدم 192.168.10.10 و192.168.10.20 مع Subnet Mask يساوي 255.255.255.0؛ كلاهما ينتمي إلى الشبكة نفسها.",
+            "في هذه الشبكة الصغيرة لا نحتاج Default Gateway لكي يتحدث الجهازان مع بعضهما. سنرسل ping، ثم نرى في Simulation Mode كيف يبحث الجهاز أولًا عن MAC Address باستخدام ARP قبل إرسال ICMP.",
+            "الفائدة أن تربط الأمر الذي تكتبه بما يحدث بين الأجهزة. إذا تأخر أول ping ثم نجح التالي، افحص انتظار ARP وحالة الوصلة بدل اعتبار كل تأخر عطلًا دائمًا."
+          ],
+          "objectives": [
+            "تشغّل الاتصال المحلي وتفرّق بين الوصلة وإعداد IP واكتشاف MAC."
+          ],
+          "concepts": [
+            "IPv4 وSubnet Mask",
+            "ping",
+            "ARP في Simulation Mode"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer same subnet ping ARP simulation",
+            "Packet Tracer same subnet ping ARP simulation beginner lab"
+          ],
+          "practice": "1. افتح PC-A ثم Desktop ثم IP Configuration، وأدخل 192.168.10.10 والقناع 255.255.255.0. أعطِ PC-B العنوان 192.168.10.20 بالقناع نفسه واترك Gateway فارغًا.\n2. من Desktop ثم Command Prompt في PC-A نفّذ ping 192.168.10.20. سجّل النتيجة وكرّر التجربة إذا كان أول طلب قد تأخر.\n3. انتقل إلى Simulation وأظهر ARP وICMP، ثم أعد ping وتابع الأحداث خطوة بخطوة. احفظ الملف واكتب أي البروتوكولين ظهر أولًا ولماذا.",
+          "review": "لماذا نجح الاتصال دون Router؟ وما الفرق بين الغرض من ARP والغرض من ping؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تجهيز Ubuntu لمختبرات Linux",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "سنتعمق هذا الشهر في Linux لأن كثيرًا من Servers وأدوات الأمن تعمل عليه. إذا كنت تستخدم Windows، فإن WSL يسمح لك بفتح Ubuntu والعمل بأوامر Linux من جهازك الحالي.",
+            "سنخصص مجلدًا لملفات التدريب ونستخدم حسابك العادي. Bash هو البرنامج الذي يفسر أوامر Linux؛ الأمر الذي تنفذه داخله قد يختلف عن أمر PowerShell، لذلك انتبه إلى النافذة التي تعمل فيها.",
+            "المطلوب اليوم تشغيل البيئة ومعرفة مكان ملفاتك، وليس تثبيت مجموعة أدوات اختراق. إذا كنت تملك Ubuntu جاهزًا، استعمله. WSL مناسب لهذه التمارين، لكنه ليس بيئة معزولة لتشغيل ملفات مشبوهة."
+          ],
+          "objectives": [
+            "تفتح Ubuntu وتعرف حسابك ومجلدك وتحتفظ بملف تدريب فيه."
+          ],
+          "concepts": [
+            "Ubuntu وWSL",
+            "Bash Terminal",
+            "مجلد التدريب وهوية المستخدم"
+          ],
+          "keywords": [
+            "شرح بالعربي Ubuntu WSL install Windows Linux terminal beginners",
+            "Ubuntu WSL install Windows Linux terminal beginners beginner lab"
+          ],
+          "practice": "1. إذا لم يكن Ubuntu موجودًا، افتح PowerShell باختيار Run as administrator ونفّذ wsl --install، ثم أعد تشغيل Windows عند الطلب. افتح Ubuntu من Start وأنشئ اسم مستخدم وكلمة مرور؛ عدم ظهور حروف كلمة المرور أثناء كتابتها طبيعي.\n2. داخل Ubuntu نفّذ whoami ثم pwd ثم mkdir -p ~/month-02-labs ثم cd ~/month-02-labs. إذا تعذّر التثبيت، سجّل رسالة الخطأ وتوقف عندها قبل دروس Linux التالية.\n3. اكتب printf \"Linux lab ready\n\" > ready.txt ثم cat ready.txt ثم ls -l. احفظ في ملاحظاتك اسم المستخدم ومسار المجلد وما عرضته قراءة الملف.",
+          "review": "كيف تعرف أنك في Ubuntu وليس PowerShell؟ ولماذا نضع ملفات التدريب داخل مجلد خاص؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "sessions": [
+        {
+          "title": "تقسيم شبكة إلى Subnets بحجم /27 و/28",
+          "subject": "الشبكات",
+          "description": [
+            "راجعت /26 في الشهر الأول، وسنضيف الآن /27 و/28 حتى تختار حجم شبكة يناسب عدد أجهزتها. في IPv4 التقليدي، /27 يحتوي 32 عنوانًا منها 30 للأجهزة، و/28 يحتوي 16 عنوانًا منها 14 للأجهزة.",
+            "عند تقسيم 192.168.10.0/24 إلى /27 تبدأ الشبكات عند 0 و32 و64 وهكذا. أول عنوان يعرّف الشبكة، وآخر عنوان هو Broadcast، والعناوين بينهما هي التي تعطيها للأجهزة في هذا التمرين.",
+            "هذه المهارة تمنعك من وضع جهازين تظن أنهما متجاوران داخل Subnets مختلفة. المطلوب أن تحسب حدود الشبكة وتراجعها، لا أن تحفظ أرقامًا دون معرفة كيف وصلت إليها."
+          ],
+          "objectives": [
+            "تحدد Network وBroadcast ومدى عناوين الأجهزة لشبكة /27 وأخرى /28."
+          ],
+          "concepts": [
+            "Network Address",
+            "Usable Hosts",
+            "Broadcast Address"
+          ],
+          "keywords": [
+            "شرح بالعربي IPv4 subnetting slash 27 slash 28 examples",
+            "IPv4 subnetting slash 27 slash 28 examples beginner lab"
+          ],
+          "practice": "1. اكتب جدولًا لأول شبكتين /27 من 192.168.10.0/24. حدّد في كل صف Network وFirst Host وLast Host وBroadcast.\n2. كرّر الجدول لأول شبكتين /28. استخدم أداة Subnet Calculator للتحقق بعد أن تحاول الحساب بنفسك.\n3. تحقق أن 192.168.10.0/27 يتيح الأجهزة من .1 إلى .30 وBroadcast هو .31، وأن الشبكة التالية تبدأ من .32. اكتب سبب عدم إعطاء .31 لجهاز في الشبكة الأولى.",
+          "review": "هل العنوانان 192.168.10.30 و192.168.10.33 ينتميان إلى /27 نفسها؟ برهن بحدود الشبكتين.",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "اختيار Subnet مناسبة لعدد الأجهزة",
+          "subject": "الشبكات",
+          "description": [
+            "تخيل قسمًا فيه 20 جهازًا وقسمًا آخر فيه 10 أجهزة، مع عنوان إضافي للـ Gateway في كل قسم. /27 يكفي الأول و/28 يكفي الثاني، لكن عليك وضع الشبكتين في نطاقين لا يتداخلان.",
+            "سنستخدم 192.168.20.0/27 للقسم الأول و192.168.20.32/28 للثاني. اختيار أول عنوان صالح للـ Gateway عادة تنظيمية في هذا المختبر، وليس قاعدة يفرضها البروتوكول.",
+            "ستحوّل الحساب إلى خطة مكتوبة تحدد اسم الجهاز وIP وMask وGateway. هذا الجدول سيكون مرجعك عندما تبني شبكة أو تبحث عن Duplicate IP أو جهاز بإعداد خاطئ."
+          ],
+          "objectives": [
+            "تختار حجمين مناسبين وتكتب خطة عناوين خالية من التداخل."
+          ],
+          "concepts": [
+            "Address Plan",
+            "Gateway داخل Subnet",
+            "تجنب تداخل العناوين"
+          ],
+          "keywords": [
+            "شرح بالعربي subnet address planning VLSM small network Packet Tracer",
+            "subnet address planning VLSM small network Packet Tracer beginner lab"
+          ],
+          "practice": "1. اكتب جدول القسمين، وخصّص .1 للـ Gateway الأول و.33 للثاني. سجّل عدد العناوين المتبقية بعد إضافة الأجهزة والـ Gateway.\n2. في نسخة من مختبر أمس اجعل PC-A هو 192.168.20.10 وPC-B هو 192.168.20.20 بقناع 255.255.255.224، ثم اختبر ping.\n3. غيّر PC-B مؤقتًا إلى 192.168.20.34 بقناع 255.255.255.240، وتوقع لماذا لن يكفي Switch وحده للاتصال. أعد الإعداد الصحيح واحفظ جدولك.",
+          "review": "إذا احتاج القسم الثاني 16 جهازًا وGateway، هل /28 تكفي؟ ما الحجم التالي المناسب؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "التعامل مع الملفات والمسارات في Linux",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "عند تحليل حادث ستتعامل مع ملفات كثيرة، والخطأ في المسار قد يجعلك تقرأ ملفًا قديمًا أو تعدّل نسخة لا تقصدها. اليوم سننشئ أصلًا ونسخة تدريب، ثم نتحقق أين يوجد كل ملف.",
+            "cp ينشئ نسخة، بينما mv يغيّر الاسم أو ينقل الملف. المسار الذي يبدأ بـ / يبدأ من جذر Linux، والرمز ~ يشير إلى مجلد المستخدم؛ أما المسار النسبي فيبدأ من موقعك الحالي.",
+            "الفائدة أن تتعلم إبقاء ملف المصدر كما هو والعمل على نسخة. سنطبق ذلك على نص كتبته بنفسك، ثم نستخدم الأسلوب نفسه لاحقًا مع Logs والأدلة."
+          ],
+          "objectives": [
+            "تنشئ نسخة عمل وتصل إلى الملف بمسار صحيح دون تغيير الأصل."
+          ],
+          "concepts": [
+            "Absolute Path وRelative Path",
+            "cp وmv",
+            "مجلد العمل الحالي"
+          ],
+          "keywords": [
+            "شرح بالعربي Linux files directories cp mv absolute relative paths",
+            "Linux files directories cp mv absolute relative paths beginner lab"
+          ],
+          "practice": "1. داخل ~/month-02-labs أنشئ المجلدين originals وworking باستخدام mkdir -p originals working. أنشئ originals/events.txt وفيه ثلاثة أسطر تجريبية عبر محرر نصوص.\n2. نفّذ cp originals/events.txt working/events.txt ثم mv working/events.txt working/events-copy.txt. اعرض الملفين باستخدام cat وتأكد أن الأصل ما زال موجودًا.\n3. نفّذ pwd، ثم اكتب المسار الكامل لنسخة العمل والمسار النسبي إليها. جرّب القراءة من مجلد آخر باستخدام المسار الكامل وسجّل الفرق.",
+          "review": "ما الفرق بين نسخ ملف ونقله؟ وكيف تفسّر رسالة No such file or directory؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 33,
+      "sessions": [
+        {
+          "title": "لماذا نستخدم VLAN داخل Switch؟",
+          "subject": "الشبكات",
+          "description": [
+            "وجود أجهزة الموظفين والضيوف على Switch واحد لا يعني أنها يجب أن تشترك في الشبكة المحلية نفسها. VLAN تقسم Switch إلى مجموعات منطقية؛ كل مجموعة لها Broadcast Domain مستقل.",
+            "تخيل أن منافذ الموظفين تنتمي إلى VLAN 10 ومنافذ الضيوف إلى VLAN 20. Broadcast من الأولى لا ينتقل مباشرة إلى الثانية عبر Layer 2، حتى لو كانت كل الكابلات متصلة بالجهاز نفسه.",
+            "سنرسم الفصل قبل إعداد الأوامر. VLAN تساعدك على تنظيم الشبكة وتقليل امتداد الحركة المحلية، لكن سياسة السماح بين المجموعات تحتاج أيضًا قواعد على Router أو Firewall عندما نربطها."
+          ],
+          "objectives": [
+            "تشرح ما تفصله VLAN وما الذي تحتاجه لتنظيم المرور بين VLANs."
+          ],
+          "concepts": [
+            "VLAN",
+            "Broadcast Domain",
+            "الفصل بين مجموعات الأجهزة"
+          ],
+          "keywords": [
+            "شرح بالعربي VLAN broadcast domain segmentation explained",
+            "VLAN broadcast domain segmentation explained beginner lab"
+          ],
+          "practice": "1. ارسم Switch بأربعة PCs. ضع PC-A وPC-B في VLAN 10، وPC-C وPC-D في VLAN 20، وحدد شبكة IP مختلفة لكل مجموعة.\n2. تتبع على الرسم ARP Broadcast صادرًا من PC-A واكتب أي الأجهزة يفترض أن تستقبله.\n3. اكتب حاجة مسموحة بين المجموعتين وحاجة ممنوعة، مثل وصول الموظف إلى Server ومنع الضيف من أجهزة الموظفين. احتفظ بهما لدرس ACL.",
+          "review": "هل اختلاف IP Subnet وحده يساوي إنشاء VLAN؟ وضح الفرق بين إعداد IP وإعداد Switch.",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "إنشاء VLAN وربط Access Ports بها",
+          "subject": "الشبكات",
+          "description": [
+            "سننفذ الرسم السابق على Switch 2960. Access Port منفذ يحمل حركة VLAN واحدة إلى جهاز مثل PC، وسنحدد لكل منفذ المجموعة التي ينتمي إليها.",
+            "ستستخدم CLI، وهي واجهة تكتب فيها أوامر Switch. الأمر show vlan brief يعرض VLANs والمنافذ التابعة لها، لذلك سنقرأه بعد الإعداد بدل الاكتفاء بنجاح كتابة الأمر.",
+            "النتيجة المطلوبة نجاح الاتصال بين جهازين داخل VLAN نفسها. فشل الاتصال بين VLANs الآن متوقع لأننا لم نضف Router يربطهما بعد؛ توثيق المتوقع جزء من الاختبار."
+          ],
+          "objectives": [
+            "تنشئ VLAN 10 و20 وتتحقق من عضوية المنافذ والاتصال الداخلي."
+          ],
+          "concepts": [
+            "Access Port",
+            "show vlan brief",
+            "اختبار الاتصال داخل VLAN"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer configure VLAN access ports 2960",
+            "Packet Tracer configure VLAN access ports 2960 beginner lab"
+          ],
+          "practice": "1. في Packet Tracer ضع أربعة PCs على المنافذ Fa0/1 إلى Fa0/4. من CLI اكتب enable ثم configure terminal ثم vlan 10 ثم name STAFF ثم exit، وكرر ذلك مع vlan 20 وname GUEST.\n2. لكل منفذ استخدم interface fa0/1 مثلًا ثم switchport mode access ثم switchport access vlan 10 ثم exit. خصص أول منفذين لـ VLAN 10 والآخرين لـ VLAN 20، ثم end وshow vlan brief.\n3. أعطِ الموظفين 192.168.10.10 و.20 بقناع /24، والضيوف 192.168.20.10 و.20 بالقناع نفسه. اختبر داخل كل مجموعة ثم بينهما، واحفظ باسم day33-vlans.pkt.",
+          "review": "إذا فشل ping بين جهازين لهما IP صحيح داخل المجموعة نفسها، كيف تستخدم show vlan brief للتحقق من المنافذ؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "البحث داخل Logs باستخدام grep وPipe",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "قد يحتوي Log على آلاف الأسطر، فلا تكون قراءته كاملًا الطريقة الأسرع للوصول إلى أحداث معينة. grep يعرض الأسطر التي تطابق كلمة أو نمطًا، مثل failed في نتائج تسجيل الدخول.",
+            "الرمز | المسمى Pipe يرسل مخرجات أمر إلى أمر آخر. سنرتب كلمات متكررة باستخدام sort ثم نعدّ التكرارات المتجاورة باستخدام uniq -c؛ الترتيب مهم لأن uniq لا يجمع الأسطر المتباعدة وحده.",
+            "هذه خطوة أولى نحو تحليل Logs من Terminal. النتيجة مجرد أسطر أو أعداد مطابقة لشرطك، لذلك يجب أن تعرف صيغة الملف وتراجع عينة قبل تفسير العدد كدليل أمني."
+          ],
+          "objectives": [
+            "تستخرج أسطر الفشل وتتحقق من عددها وتكرارها يدويًا."
+          ],
+          "concepts": [
+            "grep",
+            "Pipe بين أمرين",
+            "sort وuniq -c"
+          ],
+          "keywords": [
+            "شرح بالعربي Linux grep pipe sort uniq log analysis beginners",
+            "Linux grep pipe sort uniq log analysis beginners beginner lab"
+          ],
+          "practice": "1. أنشئ working/login.txt بستة أسطر: success وfailed وfailed وsuccess وfailed وsuccess، كل كلمة في سطر مستقل.\n2. نفّذ grep -n failed working/login.txt ثم grep -c failed working/login.txt. قارن الأسطر والعدد بالملف؛ المتوقع ثلاث حالات.\n3. نفّذ sort working/login.txt | uniq -c. أضف سطرًا failed_extra ولاحظ أن بحث failed يلتقطه أيضًا؛ جرّب grep -x failed لمطابقة السطر كاملًا.",
+          "review": "لماذا قد يعطي بحث كلمة failed عددًا أكبر من الأحداث التي تقصدها؟ ومتى تحتاج مطابقة أدق؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "sessions": [
+        {
+          "title": "نقل أكثر من VLAN عبر Trunk",
+          "subject": "الشبكات",
+          "description": [
+            "إذا امتد قسم الموظفين إلى Switch ثانٍ، نحتاج نقل VLAN 10 بين الجهازين مع إبقاء حركة الضيوف منفصلة. Trunk وصلة تستطيع حمل حركة عدة VLANs بدل تخصيص كابل مستقل لكل واحدة.",
+            "802.1Q يضيف Tag يحدد VLAN للإطارات الموسومة على Trunk. هذا مختلف عن وصلة PC العادية التي نضبطها Access؛ الجهاز النهائي في مختبرنا لا يحتاج إدارة Tags بنفسه.",
+            "سننشئ VLANs على Switchين ونربطهما عبر Trunk. فهم هذا المسار يفيدك عندما يعمل جهاز مع زميله القريب بينما يفشل مع جهاز من المجموعة نفسها في غرفة أخرى."
+          ],
+          "objectives": [
+            "تبني Trunk وتنقل VLAN نفسها بين Switchين."
+          ],
+          "concepts": [
+            "Trunk Port",
+            "802.1Q Tag",
+            "VLANs على Switchين"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer 2960 trunk 802.1Q two switches",
+            "Packet Tracer 2960 trunk 802.1Q two switches beginner lab"
+          ],
+          "practice": "1. افتح نسخة من مختبر VLAN، وأضف Switch 2960 ثانيًا. انقل PC-B وPC-D إليه، وأنشئ VLAN 10 و20 عليه واضبط Access Ports المناسبة.\n2. اربط المنفذ Gi0/1 في Switch الأول بنظيره في الثاني. على كل طرف ادخل configure terminal ثم interface gi0/1 ثم switchport mode trunk ثم end.\n3. نفّذ show interfaces trunk على الطرفين، ثم اختبر ping بين جهازي الموظفين وبين جهازي الضيوف. احفظ باسم day34-trunk.pkt.",
+          "review": "لماذا تحتاج VLAN 10 على Switch الثاني أيضًا؟ وما الفرق بين Access وTrunk في هذا الرسم؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تشخيص Allowed VLAN وNative VLAN",
+          "subject": "الشبكات",
+          "description": [
+            "قد يكون Trunk يعمل لكنه لا يسمح بمرور VLAN التي تحتاجها. Allowed VLAN List تحدد المجموعات المسموح بحملها على الوصلة؛ حذف VLAN منها يقطع مسارها دون ضرورة سقوط الرابط نفسه.",
+            "Native VLAN ترتبط بالإطارات غير الموسومة على Trunk وفق إعداد الجهاز. يجب أن تتوافق على الطرفين؛ اختلافها قد يسبب مرورًا غير مقصود أو مشاكل اتصال يصعب فهمها من شكل الرسم وحده.",
+            "سنغيّر قائمة واحدة في نسخة المختبر ثم نقارن المخرجات قبل الإصلاح وبعده. الهدف اتباع دليل محدد في إعداد Switch بدل إعادة إعداد الشبكة كاملة كلما ظهر عطل."
+          ],
+          "objectives": [
+            "تكتشف VLAN مستبعدة من Trunk وتعيدها وتتحقق من توافق Native VLAN."
+          ],
+          "concepts": [
+            "Allowed VLAN List",
+            "Native VLAN",
+            "مقارنة طرفي Trunk"
+          ],
+          "keywords": [
+            "شرح بالعربي troubleshoot trunk allowed VLAN native VLAN mismatch",
+            "troubleshoot trunk allowed VLAN native VLAN mismatch beginner lab"
+          ],
+          "practice": "1. احفظ نسخة باسم day34-trunk-fault.pkt. على Gi0/1 في Switch الأول نفّذ switchport trunk allowed vlan 10، ثم اختبر الموظفين والضيوف وتوقع اختلاف النتيجتين.\n2. اقرأ show interfaces trunk على الطرفين وحدد القائمة التي تستبعد VLAN 20. أعد السماح باستخدام switchport trunk allowed vlan 10,20 على الطرف الأول.\n3. تحقق من رجوع اتصال الضيوف، وقارن Native VLAN في الطرفين دون تغييرها. اكتب العطل والدليل والإصلاح في ثلاثة أسطر واضحة.",
+          "review": "إذا نجحت VLAN 10 وفشلت VLAN 20 عبر الوصلة نفسها، ما الذي ستفحصه أولًا ولماذا؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تطبيق File Permissions في Linux",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "تعرفت إلى الصلاحيات في الشهر الأول، وسنغيرها الآن على ملفاتك التدريبية. في عرض ls -l تظهر صلاحيات Owner ثم Group ثم Others، وكل مجموعة قد تحتوي Read وWrite وExecute.",
+            "على الملف، Read تسمح بقراءة المحتوى وWrite بتعديله. على المجلد، Execute تسمح بالمرور خلاله للوصول إلى أسماء داخله، ولذلك لا تفسر صلاحيات Folder كما تفسر صلاحيات Script.",
+            "سنستخدم chmod 600 لملف شخصي وchmod 700 لمجلد تدريب خاص. ستفهم أثر كل رقم وتوثقه؛ المقصود ضبط حاجة محددة بدل إعطاء الجميع صلاحيات واسعة لحل رسالة رفض."
+          ],
+          "objectives": [
+            "تقرأ نمط الصلاحيات وتضبط ملفًا ومجلدًا بحيث يخصان المستخدم المالك."
+          ],
+          "concepts": [
+            "chmod",
+            "Owner وGroup وOthers",
+            "صلاحيات الملف والمجلد"
+          ],
+          "keywords": [
+            "شرح بالعربي Linux chmod 600 700 file directory permissions",
+            "Linux chmod 600 700 file directory permissions beginner lab"
+          ],
+          "practice": "1. أنشئ working/private داخل مجلد التدريب وأنشئ فيه notes.txt بنص تجريبي. نفّذ ls -ld working/private وls -l working/private/notes.txt وسجّل الوضع الأول.\n2. نفّذ chmod 700 working/private ثم chmod 600 working/private/notes.txt. أعد العرض وفسر rwx------ للمجلد وrw------- للملف.\n3. اقرأ الملف بحسابك للتأكد من استمرار حاجتك الأساسية. اكتب ما تسمح به الأذونات للمالك وما لا تمنحه للمجموعتين الأخريين.",
+          "review": "لماذا نحتاج Execute على المجلد للوصول إلى ملف داخله، بينما ملف الملاحظات لا يحتاج Execute؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 35,
+      "sessions": [
+        {
+          "title": "دور Router في الاتصال بين VLANs",
+          "subject": "الشبكات",
+          "description": [
+            "الفصل الذي بنيناه يمنع الاتصال المباشر بين VLAN 10 وVLAN 20. إذا احتاج موظف الوصول إلى خدمة في مجموعة أخرى، يرسل الطلب إلى Default Gateway، ثم يقرر Router أين يرسل IP Packet.",
+            "سنستخدم Router-on-a-Stick: وصلة Trunk واحدة بين Switch وRouter، وعلى Router ننشئ Subinterface لكل VLAN. كل Subinterface لها رقم VLAN وعنوان IP يصبح Gateway لأجهزة المجموعة.",
+            "ارسم طريق الطلب والرد قبل الإعداد. نجاح Routing يسمح بالوصول وفق المسارات الموجودة، لكنه لا يحدد وحده من يجب السماح له؛ سنضيف قواعد الوصول في جزء الحماية لاحقًا."
+          ],
+          "objectives": [
+            "تختار Gateway لكل VLAN وتشرح كيف يعبر الطلب بينهما."
+          ],
+          "concepts": [
+            "Inter-VLAN Routing",
+            "Default Gateway لكل VLAN",
+            "Subinterface"
+          ],
+          "keywords": [
+            "شرح بالعربي router on a stick inter VLAN routing explained",
+            "router on a stick inter VLAN routing explained beginner lab"
+          ],
+          "practice": "1. استخدم شبكة VLAN 10 وهي 192.168.10.0/24 وشبكة VLAN 20 وهي 192.168.20.0/24. خصص 192.168.10.1 و192.168.20.1 للـ Gateway.\n2. أضف Router 2911 إلى رسمك وحدد الوصلة التي ستصبح Trunk بينه وبين Switch الأول. ارسم G0/0.10 وG0/0.20 كواجهتين منطقيتين على الوصلة نفسها.\n3. تتبع طلبًا من 192.168.10.10 إلى 192.168.20.10، ثم تتبع الرد. اكتب أين يحتاج PC إلى MAC الخاص بالـ Gateway بدل MAC الجهاز البعيد.",
+          "review": "هل يرسل PC بياناته إلى Gateway في كل الحالات؟ قارن وجهة داخل Subnet ووجهة خارجها.",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تشغيل Inter-VLAN Routing في Packet Tracer",
+          "subject": "الشبكات",
+          "description": [
+            "سننفذ التصميم السابق ونجعل كل VLAN تصل إلى Gateway الخاص بها. الأمر encapsulation dot1Q يربط Subinterface برقم VLAN حتى يفسر Router الإطارات القادمة من Trunk.",
+            "واجهة Router الأساسية يجب أن تكون مفعلة، ووصلة Switch إليه يجب أن تحمل VLAN 10 و20. إذا نسيت أحد هذين الشرطين، فقد تكون عناوين IP صحيحة بينما يتوقف الاتصال قبل خطوة Routing.",
+            "سنختبر بالتدرج: PC إلى Gateway أولًا، ثم PC إلى الجهاز في VLAN الأخرى. بهذه الطريقة ستعرف هل العطل محلي أم يقع في العبور بين الشبكتين."
+          ],
+          "objectives": [
+            "تشغّل الاتصال بين VLANs وتثبت نجاح Gateway ومسار الرد."
+          ],
+          "concepts": [
+            "encapsulation dot1Q",
+            "IP Address للـ Subinterface",
+            "اختبار Gateway ثم الوجهة"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer router on a stick 2911 configuration",
+            "Packet Tracer router on a stick 2911 configuration beginner lab"
+          ],
+          "practice": "1. اربط G0/0 في Router 2911 بالمنفذ Gi0/2 في Switch الأول. اضبط Gi0/2 على switchport mode trunk واسمح بـ VLAN 10,20.\n2. في Router نفّذ enable ثم configure terminal ثم interface g0/0 ثم no shutdown. انتقل إلى interface g0/0.10 ثم encapsulation dot1Q 10 ثم ip address 192.168.10.1 255.255.255.0. كرر على g0/0.20 مع VLAN 20 والعنوان 192.168.20.1، ثم end.\n3. أدخل Gateway المناسب في IP Configuration لكل PC. اختبر الوصول إلى Gateway ثم بين VLANs، واقرأ show ip interface brief. احفظ باسم day35-routing.pkt.",
+          "review": "إذا وصل PC إلى Gateway ولم يصل إلى VLAN الأخرى، ما إعدادان ستفحصهما قبل اتهام الكابل؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "ربط Process بـ Port على جهازك",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "Server ليس مجرد جهاز بعيد؛ يمكنك تشغيل برنامج صغير على جهازك يستقبل طلبات. سنشغّل Python HTTP Server داخل Ubuntu ونربط العملية التي تشغله بالـ Port الذي تستمع عليه.",
+            "127.0.0.1 عنوان Loopback يعود إلى الجهاز نفسه. عندما نحدد --bind 127.0.0.1 فإننا نقصر الاستماع على هذه الواجهة؛ هذا يساعدك على فهم الفرق بين خدمة محلية وخدمة تستمع على واجهات الشبكة.",
+            "ستفحص الخدمة بأمر ss ثم توقف العملية التي بدأتَها بنفسك. في عمل الأمن تحتاج معرفة أي برنامج فتح Port ولماذا، لأن ظهور Port وحده لا يخبرك إن كان مطلوبًا أو غير مناسب."
+          ],
+          "objectives": [
+            "تحدد PID لخدمة تدريبية وتلاحظ اختفاء Port بعد إيقافها."
+          ],
+          "concepts": [
+            "Process ID",
+            "Listening Socket",
+            "localhost و127.0.0.1"
+          ],
+          "keywords": [
+            "شرح بالعربي Linux ss listening ports python http server localhost",
+            "Linux ss listening ports python http server localhost beginner lab"
+          ],
+          "practice": "1. داخل Ubuntu تحقق باستخدام python3 --version. إذا لم يكن مثبتًا، استخدم sudo apt update ثم sudo apt install python3. أنشئ مجلد working/web واكتب داخله index.html يحتوي عبارة Lab page فقط.\n2. من داخل working/web نفّذ python3 -m http.server 8000 --bind 127.0.0.1. افتح نافذة Ubuntu ثانية ونفّذ ss -lntp وابحث عن 127.0.0.1:8000، ثم جرّب curl http://127.0.0.1:8000؛ إن غاب curl ثبّته عبر sudo apt install curl.\n3. سجّل PID واسم العملية كما ظهرا. ارجع إلى نافذة Server واضغط Ctrl+C، ثم أعد ss وطلب curl لتوثيق الفرق بعد الإيقاف.",
+          "review": "ما الفرق بين ملف Python الموجود على القرص وProcess تعمل الآن وPort تستمع عليه؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 36,
+      "sessions": [
+        {
+          "title": "قراءة MAC Address Table وARP Table",
+          "subject": "الشبكات",
+          "description": [
+            "Switch يحتاج معرفة المنفذ الذي يقوده إلى MAC Address معين، بينما PC يحتاج ربط IP محلي بـ MAC. لهذا لدينا جدولان يؤديان وظيفتين مختلفتين: MAC Address Table على Switch وARP Table على الجهاز.",
+            "Switch يتعلم من Source MAC للإطارات التي تصل إليه، ثم يستخدم Destination MAC لاختيار منفذ الإرسال. ARP على PC يساعده في معرفة MAC للوجهة المحلية أو للـ Gateway عندما تكون الوجهة بعيدة.",
+            "سنقرأ الجدولين بعد توليد حركة بسيطة. هذه المقارنة تمنع الخلط بين سؤال أين يوجد هذا الجهاز على Switch وسؤال ما MAC المرتبط بعنوان IP هذا."
+          ],
+          "objectives": [
+            "تفسر إدخالًا في كل جدول وتربطه بمسار Packet داخل المختبر."
+          ],
+          "concepts": [
+            "show mac address-table",
+            "arp -a",
+            "Layer 2 وLayer 3"
+          ],
+          "keywords": [
+            "شرح بالعربي MAC address table vs ARP table Packet Tracer",
+            "MAC address table vs ARP table Packet Tracer beginner lab"
+          ],
+          "practice": "1. افتح مختبر اليوم 35 وأرسل ping من PC-A إلى زميله المحلي ثم إلى PC في VLAN الأخرى.\n2. على Switch نفّذ show mac address-table، وعلى PC-A نفّذ arp -a. اختر MAC واحدًا واربطه بالجهاز والمنفذ أو IP المناسب.\n3. اكتب لماذا تتوقع أن تجد MAC الخاص بالـ Gateway في ARP Table عند الاتصال بـ VLAN بعيدة، ثم تحقق في Simulation Mode.",
+          "review": "هل يحتفظ Switch 2960 في MAC Address Table بقائمة IP لكل الأجهزة؟ ما البيانات الأساسية التي رأيتها؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "كيف يمنع STP حلقات الشبكة؟",
+          "subject": "الشبكات",
+          "description": [
+            "إضافة كابل ثانٍ بين Switchين قد تبدو طريقة لزيادة الاعتمادية، لكنها قد تصنع مسارًا دائريًا للإطارات داخل Layer 2. تكرار Broadcast على هذه الحلقة قد يستهلك الشبكة ويعطل العمل.",
+            "STP يختار مسارات تمنع الحلقة، وقد يضع منفذًا زائدًا في حالة تمنعه من تمرير البيانات العادية. وجود منفذ غير مستخدم لحظيًا لا يعني بالضرورة وجود كابل تالف؛ قد يكون قرار حماية طبيعيًا.",
+            "سنراقب STP في محاكاة ونرى كيف يتغير المسار عند فصل وصلة نشطة. يكفي اليوم فهم سبب الحماية وقراءة حالة المنفذ، دون الدخول في جميع تفاصيل ضبط STP."
+          ],
+          "objectives": [
+            "تميّز منفذًا أوقفه STP عن عطل وتشرح دور المسار البديل."
+          ],
+          "concepts": [
+            "Switching Loop",
+            "STP",
+            "Forwarding وBlocking"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer STP switching loop blocked port",
+            "Packet Tracer STP switching loop blocked port beginner lab"
+          ],
+          "practice": "1. احفظ نسخة من مختبر Switchين، وأضف وصلة ثانية بين منفذين متاحين. اضبط المنفذين Trunk يحملان VLAN 10 و20، واترك STP مفعّلًا.\n2. انتظر استقرار المحاكاة ونفّذ show spanning-tree vlan 10 على الجهازين. سجّل Root وحالات المنافذ التي تراها.\n3. افصل في المحاكاة الوصلة التي تمرر الحركة، ثم انتظر إعادة الاستقرار وأعد ping. سجّل كيف عاد المسار عبر الوصلة البديلة واحفظ ملاحظاتك.",
+          "review": "لماذا لا نعالج كل منفذ Blocking بتعطيل STP؟ وماذا قد يحدث إذا أزلنا الحماية مع وجود حلقة؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "قراءة Logs في Linux وWindows",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "نظام التشغيل يسجل أحداثًا تساعد على تفسير ما جرى: بدء خدمة، فشل تشغيل، أو مشكلة برنامج. قبل البحث عن حادث، يجب أن تعرف أين تعرض الأحداث وما الوقت والمصدر والرسالة في كل سطر.",
+            "في Linux قد تجد الأحداث عبر journalctl إذا كانت البيئة تستخدم systemd، أو داخل ملفات /var/log. بعض بيئات WSL لا تعرض سجلات مثل جهاز Linux كامل؛ غياب مصدر معين لا يعني أنك نفذت الأمر خطأ.",
+            "سنقارن حدثًا من Linux أو Log التدريب بحدث عادي في Windows Event Viewer. الغرض قراءة حقول الحدث وتسجيل مصدره، مع التمييز بين رسالة النظام واستنتاجك أنت عنها."
+          ],
+          "objectives": [
+            "تستخرج وقت حدث ومصدره ورسالة واضحة دون افتراض أنه هجوم."
+          ],
+          "concepts": [
+            "Timestamp وEvent",
+            "journalctl",
+            "Windows Event Viewer"
+          ],
+          "keywords": [
+            "شرح بالعربي journalctl Windows Event Viewer read logs beginners",
+            "journalctl Windows Event Viewer read logs beginners beginner lab"
+          ],
+          "practice": "1. في Ubuntu جرّب journalctl -n 20 --no-pager. إذا لم توجد أحداث أو لم تتوفر الخدمة، اعرض ls /var/log واستخدم ملفك التدريبي بدل تغيير إعداد النظام بحثًا عن Log.\n2. في Windows افتح Start وابحث عن Event Viewer، ثم Windows Logs ثم System. اختر حدثًا عاديًا واقرأ Date and Time وSource وEvent ID وGeneral.\n3. اكتب بطاقة حدث من أربعة حقول: المصدر، الوقت مع المنطقة الزمنية إن كانت معروفة، الرسالة، وما تستطيع إثباته منها. استبعد أسماء الحسابات الحقيقية من نسخة التقرير التي تشاركها.",
+          "review": "هل كل Error في Event Viewer دليل هجوم؟ ما السياق الإضافي الذي تحتاجه؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 37,
+      "sessions": [
+        {
+          "title": "مراجعة عملية: بناء شبكة VLAN من البداية",
+          "subject": "الشبكات",
+          "description": [
+            "هذه جلسة تثبيت لما تعلمته في الأسبوع الأول. سنعيد بناء شبكة فيها مجموعتان على Switchين وRouter، حتى نعرف هل تفهم التسلسل أم تعتمد على ملف جاهز يعمل بالفعل.",
+            "ابدأ بالرسم وجدول IP، ثم Access Ports، ثم Trunk، ثم Gateway. كل مرحلة لها اختبار صغير؛ هذا يمنع تراكم عدة أخطاء قبل اكتشاف المشكلة في النهاية.",
+            "يمكنك الرجوع إلى قائمة الأوامر بعد المحاولة، لكن سجّل الخطوة التي احتجت فيها المساعدة. الملف النهائي مع جدول الاختبارات هو مقياس تعلمك في هذه الجلسة."
+          ],
+          "objectives": [
+            "تعيد بناء شبكة الأسبوع وتثبت الاتصال داخل VLANs وبينها."
+          ],
+          "concepts": [
+            "خطة عناوين",
+            "Access وTrunk",
+            "Gateway لكل مجموعة"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer VLAN trunk inter VLAN routing practice lab",
+            "Packet Tracer VLAN trunk inter VLAN routing practice lab beginner lab"
+          ],
+          "practice": "1. أنشئ مشروعًا فارغًا بأربعة PCs وSwitchين وRouter. استخدم VLAN 10 و20 وشبكتي 192.168.10.0/24 و192.168.20.0/24.\n2. نفّذ الإعداد بالتدرج من جدولك، واختبر PC داخل مجموعته ثم Gateway ثم الوجهة في المجموعة الأخرى.\n3. احفظ باسم week1-rebuild.pkt وسجّل ثلاث نتائج ping مع اسم المصدر والوجهة والنتيجة، وأمر show واحدًا يثبت إعداد Trunk.",
+          "review": "ما ترتيب الفحص الذي اتبعته؟ وأي خطوة احتجت إلى مراجعتها قبل نجاح المختبر؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "مراجعة تشخيص: IP خاطئ أو VLAN خاطئة؟",
+          "subject": "الشبكات",
+          "description": [
+            "قد تبدو الأعطال متشابهة للمستخدم: ping لا يعمل. لكن السبب قد يكون Mask غير صحيح أو منفذًا في VLAN أخرى أو Gateway خاطئًا، وكل حالة تحتاج دليلًا مختلفًا.",
+            "سنغيّر إعدادًا واحدًا في كل تجربة ونحفظ القيمة الصحيحة قبل التغيير. بعد ظهور المشكلة، اختر الفحص الأقرب للسبب المتوقع؛ عنوان PC يُفحص من إعداداته وعضوية VLAN تُفحص من Switch.",
+            "الفائدة أن يصبح الإصلاح نتيجة تشخيص، لا سلسلة تغييرات عشوائية. لا تنهِ التجربة عند نجاح ping واحد؛ أعد الاختبارات المحلية وبين VLANs حتى لا يصلح جزء ويتعطل آخر."
+          ],
+          "objectives": [
+            "تميز ثلاثة أسباب للفشل وتربط كل إصلاح بنتيجة تحقق."
+          ],
+          "concepts": [
+            "فرضية العطل",
+            "اختبار يميز الأسباب",
+            "التحقق بعد الإصلاح"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer troubleshoot VLAN wrong gateway subnet mask",
+            "Packet Tracer troubleshoot VLAN wrong gateway subnet mask beginner lab"
+          ],
+          "practice": "1. على نسخة week1-rebuild غيّر Gateway لجهاز واحد إلى .254، ثم اختبر وجهة محلية وأخرى بعيدة. أعد Gateway الصحيح بعد تسجيل الملاحظة.\n2. انقل منفذ الجهاز مؤقتًا إلى VLAN الأخرى، وافحص show vlan brief ثم أعده. جرّب بعدها IP غير متوافق مع Subnet وسجّل فحص إعداد الجهاز.\n3. اكتب جدولًا من ثلاثة صفوف: التغيير، ما فشل وما نجح، الدليل، والإصلاح. أعد جميع الاختبارات واحفظ النسخة السليمة.",
+          "review": "ما العطل الذي يسمح غالبًا باتصال محلي ويمنع الوصول إلى Subnet أخرى؟ ولماذا؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "مراجعة Linux: تقرير صغير من ملفاتك",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "سنستخدم مهارات الأسبوع في مهمة واحدة: تجهيز ملف أحداث، حماية نسخة منه، واستخراج النتائج المهمة. هذه صورة صغيرة من عمل محلل يحتاج تحويل ملفات كثيرة إلى تقرير يمكن مراجعته.",
+            "المطلوب أن تعرف مصدر كل معلومة وتحتفظ بالأصل. سترفق أمرًا استخدمته والنتيجة التي أعطاها بدل كتابة وصف عام مثل النظام آمن أو كل شيء يعمل.",
+            "إذا نسيت أمرًا، ابحث عن وظيفته ثم أعد تطبيقه. نجاح المراجعة يعني أنك تستطيع شرح أين الملف، ومن يمكنه قراءته، وكيف حسبت عدد الأسطر المطلوبة."
+          ],
+          "objectives": [
+            "تنتج تقريرًا قصيرًا يربط نتائج Linux بأوامر قابلة للإعادة."
+          ],
+          "concepts": [
+            "إدارة ملفات",
+            "Permissions",
+            "البحث وكتابة الدليل"
+          ],
+          "keywords": [
+            "شرح بالعربي Linux beginner practice files permissions grep log report",
+            "Linux beginner practice files permissions grep log report beginner lab"
+          ],
+          "practice": "1. أنشئ originals/week1.log بعشرة أسطر نتائج دخول تدريبية، ثلاثة منها failed. انسخه إلى working ثم اضبط صلاحيات نسخة العمل على 600.\n2. استخرج الأسطر الفاشلة وأرقامها باستخدام grep -n، واحسبها باستخدام grep -c. اعرض صلاحيات الملف باستخدام ls -l.\n3. اكتب report-week1.txt وفيه المسار، عدد الأحداث، عدد failed، معنى الصلاحيات، والأوامر الثلاثة التي تثبت ذلك. قارن الأعداد يدويًا.",
+          "review": "هل يستطيع شخص آخر إعادة نتيجتك من تقريرك وحده؟ ما المعلومة التي تنقص إذا لم تذكر صيغة الملف؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 38,
+      "sessions": [
+        {
+          "title": "قراءة Routing Table واختيار المسار",
+          "subject": "الشبكات",
+          "description": [
+            "Router قد يعرف عدة مسارات، وهو لا يختار الوجهة اعتمادًا على اسم الجهاز أو شكل الرسم. يبحث عن IP المطلوب داخل Routing Table، ثم يستخدم أطول Prefix مطابق بين المسارات المثبتة.",
+            "مثلًا، مسار إلى 10.20.0.0/16 أدق من مسار إلى 10.0.0.0/8 للوجهة 10.20.1.5. Connected يعني شبكة متصلة مباشرة بواجهة Router، بينما Static Route مسار تضيفه أنت إلى شبكة أخرى.",
+            "سنقرأ جدول Router في مختبرنا ثم نحل أمثلة على الورق. هذه المهارة تجعل تفسير الطريق ممكنًا قبل إرسال أي Packet، وتفيد في فهم سبب ذهاب الاتصال إلى جهة غير مقصودة."
+          ],
+          "objectives": [
+            "تختار المسار المطابق لوجهة وتشرح معنى Connected وStatic."
+          ],
+          "concepts": [
+            "Connected Route",
+            "Static Route",
+            "Longest Prefix Match"
+          ],
+          "keywords": [
+            "شرح بالعربي routing table longest prefix match connected static route",
+            "routing table longest prefix match connected static route beginner lab"
+          ],
+          "practice": "1. في Router مختبر VLAN نفّذ show ip route وحدد الشبكتين المتصلتين. اقرأ الرموز من مفتاح المخرجات بدل تخمين معنى كل حرف.\n2. اكتب ثلاثة مسارات افتراضية: 10.0.0.0/8 و10.20.0.0/16 و0.0.0.0/0. اختر مسار 10.20.1.5 ثم 10.30.1.5 ثم 192.0.2.5.\n3. فسر اختيارك لكل وجهة، واربط Prefix بالشبكة التي يغطيها. سجّل أن هذا التمرين يفترض وجود المسارات الثلاثة فعلًا داخل الجدول.",
+          "review": "لماذا لا نختار Default Route إذا وجد مسار أطول يطابق الوجهة؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "ربط شبكتين باستخدام Static Routes",
+          "subject": "الشبكات",
+          "description": [
+            "سننشئ مختبرًا منفصلًا فيه Routerان، ولكل واحد LAN خاصة. Router يعرف شبكاته المتصلة تلقائيًا عندما تعمل الواجهات، لكنه يحتاج معلومة عن LAN الموجودة خلف Router الآخر.",
+            "Static Route يحدد شبكة الوجهة وNext Hop، أي Router التالي على الطريق. نجاح الذهاب وحده لا يكفي؛ الطرف الآخر يحتاج مسارًا يعيد الرد إلى المصدر.",
+            "سنستخدم وصلة /30 بين Routerين وشبكتي /24 للأجهزة. في النهاية ستشرح لماذا أضفنا Route على الطرفين، وتحتفظ بهذا المختبر لدروس Default Route وNAT."
+          ],
+          "objectives": [
+            "تربط LANs خلف Routerين وتثبت وجود Route للذهاب والرد."
+          ],
+          "concepts": [
+            "Next Hop",
+            "وصلة بين Routerين",
+            "مسار الذهاب والعودة"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer two routers static routing return route",
+            "Packet Tracer two routers static routing return route beginner lab"
+          ],
+          "practice": "1. أنشئ Routerين 2911، وكل واحد متصل بـ PC عبر Switch. اجعل LAN الأولى 192.168.30.0/24 وGateway .1، والثانية 192.168.40.0/24 وGateway .1. أعطِ PC في كل LAN العنوان .10.\n2. اربط G0/1 بين Routerين بعناوين 10.0.0.1 و10.0.0.2 وقناع 255.255.255.252. اضبط IP على واجهات LAN وفعّل الواجهات باستخدام no shutdown.\n3. على الأول أضف ip route 192.168.40.0 255.255.255.0 10.0.0.2، وعلى الثاني أضف ip route 192.168.30.0 255.255.255.0 10.0.0.1. اختبر ping بين PCين واقرأ show ip route، ثم احفظ day38-static.pkt.",
+          "review": "ماذا يحدث إذا أضفت المسار على Router الأول فقط؟ كيف تفرق بين فشل الطلب وفشل رجوع الرد؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "استخدام Dictionary لعد الأحداث حسب المصدر",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "برنامج الشهر الأول كان يحسب مجموع حالات الفشل. الآن نحتاج معرفة توزيعها: هل جاءت كلها من مصدر واحد أم من مصادر مختلفة؟ Dictionary في Python تربط كل مفتاح بقيمة، مثل IP بعدد الأحداث.",
+            "سنمر على أحداث تدريبية ونزيد عداد المصدر فقط عندما تكون النتيجة failed. get تسمح بقراءة العدد الحالي أو بدء العداد من صفر إذا ظهر المصدر لأول مرة.",
+            "هذا أول جزء في تقرير أمني أكثر فائدة من عدد إجمالي. لكنه لا يحدد هوية شخص من IP، فقد يشترك مستخدمون في NAT أو Proxy؛ سنبقي النتيجة ضمن ما تقوله البيانات."
+          ],
+          "objectives": [
+            "تحسب حالات الفشل لكل IP وتطابقها مع مثال معروف."
+          ],
+          "concepts": [
+            "Python dict",
+            "مفتاح IP وقيمة العدد",
+            "get مع قيمة افتراضية"
+          ],
+          "keywords": [
+            "شرح بالعربي Python dictionary count failed logins by IP",
+            "Python dictionary count failed logins by IP beginner lab"
+          ],
+          "practice": "1. في ملف count_sources.py أنشئ قائمة Dictionaries بخمس أحداث لها الحقلان ip وresult. اجعل 192.0.2.10 يفشل مرتين وينجح مرة، و192.0.2.20 يفشل مرة وينجح مرة.\n2. أنشئ counts = {}، وداخل for استخدم شرط result == \"failed\" ثم counts[ip] = counts.get(ip, 0) + 1. اطبع المفاتيح والأعداد.\n3. شغّل الملف باستخدام python3 count_sources.py داخل Ubuntu. المتوقع 2 للمصدر الأول و1 للثاني؛ أضف مصدرًا جديدًا وتحقق من بدء عداده من 1.",
+          "review": "لماذا نحتاج عدادًا لكل مصدر؟ وهل ارتفاع العدد وحده يثبت وجود مهاجم؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 39,
+      "sessions": [
+        {
+          "title": "متى نستخدم Default Route؟",
+          "subject": "الشبكات",
+          "description": [
+            "Router صغير في فرع لا يحتاج أحيانًا قائمة بكل شبكة بعيدة، لأن جميع الوجهات غير المحلية تمر عبر Router مركزي واحد. Default Route يحدد الطريق عند غياب مسار أدق يطابق الوجهة.",
+            "في IPv4 نكتبه 0.0.0.0/0، وهو يشمل أي عنوان لكن أولوية المطابقة تكون للمسار الأطول. وجود Default Route لا يعني أن الوجهة تعمل أو أن الطرف التالي يعرف طريقها؛ هو مجرد قرار الإرسال التالي.",
+            "سنستبدل مسارًا محددًا في مختبر أمس بمسار افتراضي على طرف واحد. بعدها نقارن حركة عنوان معروف بعنوان لا توجد له شبكة فعلية في المختبر."
+          ],
+          "objectives": [
+            "تضبط Default Route وتفسر حدود ما يثبته وجودها."
+          ],
+          "concepts": [
+            "0.0.0.0/0",
+            "مسار محدد ومسار افتراضي",
+            "حدود معرفة Router"
+          ],
+          "keywords": [
+            "شرح بالعربي Cisco default route 0.0.0.0 static routing example",
+            "Cisco default route 0.0.0.0 static routing example beginner lab"
+          ],
+          "practice": "1. احفظ نسخة من day38-static. على Router الأول داخل configure terminal احذف المسار القديم بالأمر no ip route 192.168.40.0 255.255.255.0 10.0.0.2.\n2. أضف ip route 0.0.0.0 0.0.0.0 10.0.0.2 ثم اقرأ show ip route. اترك مسار العودة على Router الثاني كما هو واختبر PC البعيد.\n3. جرّب وجهة مثل 203.0.113.10 غير الموجودة في المختبر، وتابع الإرسال في Simulation Mode. اكتب لماذا لم ينشئ Default Route جهازًا أو خدمة عند تلك الوجهة.",
+          "review": "هل وجود Gateway of last resort يعني أن الإنترنت يعمل؟ ما الذي يحتاج اختبارًا إضافيًا؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تشخيص مسار العودة المفقود",
+          "subject": "الشبكات",
+          "description": [
+            "الاتصال يحتاج طريقًا في الاتجاهين. قد تصل Packet إلى الوجهة لكن الرد يتوقف لأن Router آخر لا يعرف شبكة المصدر؛ من جهة المستخدم يبدو الأمر مثل انقطاع كامل.",
+            "سنزيل مسار العودة في نسخة تدريبية ثم نفحص المراحل: الوصلة المحلية، Router التالي، وشبكة الوجهة. tracert يساعد في فهم المسار، لكن النجوم قد تعني عدم وصول رد ICMP ولا تحدد السبب وحدها.",
+            "ستكتب فرضية ثم تفحص جدول الطرف المناسب لإثباتها. هذه الطريقة مفيدة عندما يبدو إعداد جهازك سليمًا ومع ذلك لا تستلم ردودًا من شبكة بعيدة."
+          ],
+          "objectives": [
+            "تحدد نقص Route في جهة العودة وتثبت أثر إضافته."
+          ],
+          "concepts": [
+            "Return Path",
+            "ping إلى Next Hop",
+            "tracert وحدود الاستنتاج"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer missing return route troubleshooting",
+            "Packet Tracer missing return route troubleshooting beginner lab"
+          ],
+          "practice": "1. على Router الثاني في نسخة المختبر احذف Route العودة إلى 192.168.30.0/24 بعد كتابة قيمته الأصلية في الملاحظات.\n2. اختبر من PC الأول Gateway المحلي ثم عنوان 10.0.0.1 ثم PC البعيد. اقرأ show ip route على Routerين وتابع ICMP في Simulation لمعرفة أين يتوقف الرد.\n3. أعد ip route 192.168.30.0 255.255.255.0 10.0.0.1 على الثاني. كرر الاختبار واحفظ جدول قبل وبعد يتضمن Route الذي كان مفقودًا.",
+          "review": "لماذا لا يكفي أن يجد Router الأول مسارًا إلى الوجهة؟ وكيف تثبت أن المشكلة في العودة؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تنظيم محلل Logs باستخدام Functions",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "عندما يكبر Script، يصبح خلط قراءة الملف وتقسيم السطر وعد النتائج في كتلة واحدة صعبًا في الفهم. Function تجمع مهمة محددة، مثل تحويل سطر نصي إلى حدث واضح الحقول.",
+            "سنكتب parse_line تستقبل سطرًا بصيغة ip,result وتعيد Dictionary إذا كانت الحقول صحيحة، أو None إذا كان السطر لا يصلح. البرنامج الرئيسي سيقرر هل يعد الحدث أم يسجل خطأ الإدخال.",
+            "الفائدة أنك تستطيع اختبار تفسير السطر وحده قبل تشغيل ملف كامل. هذا يفصل أخطاء البيانات عن أخطاء العد، ويجعل إصلاح البرنامج أسهل عندما تتغير صيغة Log."
+          ],
+          "objectives": [
+            "تكتب Function قابلة للاختبار وتحافظ على نتائج العد السابقة."
+          ],
+          "concepts": [
+            "def وreturn",
+            "parse_line",
+            "فصل القراءة عن العد"
+          ],
+          "keywords": [
+            "شرح بالعربي Python functions parse log lines return dictionary None",
+            "Python functions parse log lines return dictionary None beginner lab"
+          ],
+          "practice": "1. انسخ Script أمس إلى parse_log.py. أضف def parse_line(line) واستخدم strip ثم split(\",\") مع التحقق من وجود حقلين غير فارغين وحالة success أو failed.\n2. أعد Dictionary بالمفتاحين ip وresult عند النجاح، وأعد None عند غياب حقل أو ظهور حالة غير معروفة. جرّب Function على سطر صالح وسطر فارغ وسطر ناقص.\n3. اجعل حلقة العد تستدعي Function، وتزيد invalid عندما تكون النتيجة None. تحقق أن سطرًا تالفًا لا يوقف معالجة بقية الأسطر.",
+          "review": "ما الذي تعيده Function؟ ولماذا نختبر تفسير السطر مستقلًا عن عد الأحداث؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 40,
+      "sessions": [
+        {
+          "title": "إعداد DHCP Pool بدل إدخال IP يدويًا",
+          "subject": "الشبكات",
+          "description": [
+            "إدخال IP يدويًا مناسب لمختبر صغير، لكنه يتعب المسؤول ويزيد أخطاء التكرار عندما تكبر الشبكة. DHCP يوزع إعدادات تشمل IP وMask وGateway، وقد يرسل عنوان DNS أيضًا.",
+            "سننشئ Pool على Router لشبكة 192.168.50.0/24 ونستثني العناوين التي نريد حجزها لأجهزة ثابتة. Pool ليس مجرد قائمة IP؛ إرسال Gateway خاطئ قد يجعل الاتصال المحلي يعمل بينما يفشل البعيد.",
+            "سنفحص الإعداد الذي استلمه PC ونقارنه بما كتبناه في Router. هكذا تتعلم التحقق من النتيجة على الطرف المستفيد، وليس من إعداد Server وحده."
+          ],
+          "objectives": [
+            "توزع إعدادات DHCP صحيحة وتقرأ Lease لجهاز المختبر."
+          ],
+          "concepts": [
+            "DHCP Pool",
+            "Excluded Addresses",
+            "Lease وGateway وDNS"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer Cisco router DHCP pool excluded address",
+            "Packet Tracer Cisco router DHCP pool excluded address beginner lab"
+          ],
+          "practice": "1. أنشئ مختبرًا بـ Router وSwitch وPC. اضبط واجهة LAN للـ Router على 192.168.50.1/24 وفعّلها.\n2. من configure terminal نفّذ ip dhcp excluded-address 192.168.50.1 192.168.50.20 ثم ip dhcp pool OFFICE ثم network 192.168.50.0 255.255.255.0 ثم default-router 192.168.50.1 ثم end.\n3. في PC افتح IP Configuration واختر DHCP. سجّل IP وMask وGateway المستلمة، واختبر Gateway ثم اقرأ show ip dhcp binding على Router. احفظ day40-dhcp.pkt.",
+          "review": "لماذا استثنينا عنوان Gateway من التوزيع؟ وكيف يمكن أن يعمل ping محلي رغم إعداد DHCP غير مكتمل؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "وصول DHCP إلى شبكة أخرى عبر DHCP Relay",
+          "subject": "الشبكات",
+          "description": [
+            "طلب DHCP الأول يصدر عادةً كـ Broadcast داخل الشبكة المحلية، وRouter لا يمرر هذا Broadcast مباشرة إلى كل شبكة أخرى. إذا كان DHCP Server بعيدًا، نحتاج Relay ينقل الطلب إليه.",
+            "سنضع Server في شبكة 192.168.60.0/24 وPC في 192.168.50.0/24، وبينهما Router. على الواجهة المواجهة للـ PC نحدد ip helper-address بعنوان Server، ويستخدم Server Pool مناسبة لشبكة العميل.",
+            "الهدف فهم لماذا لا يكفي أن يكون Server شغالًا وقابلًا للوصول. يجب أن يصل الطلب بالطريقة المناسبة، وأن يملك Server إعدادات الشبكة التي سيعطيها للعميل."
+          ],
+          "objectives": [
+            "تشغّل DHCP Relay وتحدد مكانه الصحيح على Router."
+          ],
+          "concepts": [
+            "DHCP Broadcast",
+            "ip helper-address",
+            "DHCP Server مركزي"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer DHCP relay ip helper address server",
+            "Packet Tracer DHCP relay ip helper address server beginner lab"
+          ],
+          "practice": "1. في مختبر جديد اضبط G0/0 للـ Router على 192.168.50.1/24 وG0/1 على 192.168.60.1/24. صِل PC بالشبكة الأولى وServer-PT بالثانية عبر Switchين، وأعطِ Server العنوان 192.168.60.10 وGateway .1.\n2. في Server افتح Services ثم DHCP وأنشئ Pool للعملاء يبدأ من 192.168.50.21 بقناع 255.255.255.0 وGateway 192.168.50.1، وفعّل الخدمة. لا تشغّل Pool محلية أخرى على Router في هذا المختبر.\n3. على interface g0/0 في Router أضف ip helper-address 192.168.60.10. اختر DHCP على PC وقارن النتيجة قبل إضافة Relay وبعدها، ثم احفظ day40-relay.pkt.",
+          "review": "لماذا وضعنا ip helper-address على جهة العميل؟ ولماذا يحتاج Pool شبكة العميل لا شبكة Server؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "قراءة CSV بطريقة صحيحة في Python",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "صيغة CSV شائعة في تقارير الأدوات: أول سطر يعرّف الأعمدة، وكل سطر بعده يمثل حدثًا. بدل الاعتماد على رقم حقل ثابت، csv.DictReader يسمح بقراءة قيم مثل row[\"ip\"] بالاسم.",
+            "استخدام split(\",\") وحده قد يعطي نتيجة خاطئة عندما تحتوي قيمة بين Quotes على فاصلة. مكتبة csv تتعامل مع قواعد الصيغة، ثم يبقى عليك التحقق من الحقول المطلوبة والحالات المقبولة.",
+            "سننقل برنامج العد إلى CSV مع وقت ومصدر ونتيجة. هذه الخطوة ستجعل إضافة حقول لاحقة أسهل، وتمنع خلط عمود IP بعمود الحالة إذا تغير ترتيب الأعمدة."
+          ],
+          "objectives": [
+            "تقرأ ملف CSV بالـ Header وتحسب الأحداث الصحيحة مع تسجيل المرفوض."
+          ],
+          "concepts": [
+            "CSV Header",
+            "csv.DictReader",
+            "أسماء الحقول بدل مواقعها"
+          ],
+          "keywords": [
+            "شرح بالعربي Python csv DictReader parse log file validation",
+            "Python csv DictReader parse log file validation beginner lab"
+          ],
+          "practice": "1. أنشئ events.csv بالـ Header التالي: timestamp,ip,result. أضف ستة أحداث تدريبية بأوقات بصيغة مثل 2026-12-01T09:00:00+00:00 ومصدرين من 192.0.2.0/24؛ اجعل ثلاثة أحداث failed.\n2. اكتب Script يستورد csv ويستخدم with open(\"events.csv\", newline=\"\", encoding=\"utf-8\") ثم csv.DictReader. اقرأ الحقول بأسمائها وتحقق أنها غير فارغة قبل العد.\n3. أعد ترتيب أعمدة CSV مع تعديل Header وترتيب القيم، ثم شغّل البرنامج. تحقق أن العدد بقي ثلاثة، وأضف سطرًا ناقصًا لترى كيف تسجله كبيانات غير صالحة.",
+          "review": "كيف يساعد Header في قراءة الملف؟ ومتى يكون split وحده غير كافٍ لفهم CSV؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 41,
+      "sessions": [
+        {
+          "title": "إضافة DNS لخدمات المختبر",
+          "subject": "الشبكات",
+          "description": [
+            "سنمنح Web Server اسمًا مثل portal.lab.test حتى لا يضطر المستخدم إلى كتابة IP كل مرة. A Record يربط هذا الاسم بعنوان IPv4، بينما HTTP Service هي التي تقدم الصفحة بعد وصول الاتصال.",
+            "DNS وHTTP وظيفتان منفصلتان حتى لو وضعناهما على Server واحد في المختبر. نجاح nslookup يعني أن تحويل الاسم أعطى نتيجة، لكنه لا يثبت أن Web Server يستجيب أو أن الصفحة المطلوبة موجودة.",
+            "سنختبر الاسم أولًا ثم الصفحة، ونقارن فتحها بالـ IP. هذه المقارنة تساعدك على فصل خطأ DNS عن خطأ الاتصال بالخدمة بدل جمعهما تحت عبارة الموقع لا يعمل."
+          ],
+          "objectives": [
+            "تضبط A Record وتختبر DNS وHTTP كلًا على حدة."
+          ],
+          "concepts": [
+            "A Record",
+            "DNS Server Address",
+            "الاسم والعنوان والخدمة"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer DNS HTTP server A record lab",
+            "Packet Tracer DNS HTTP server A record lab beginner lab"
+          ],
+          "practice": "1. في مختبر day40-relay افتح Server-PT ثم Services ثم DNS وفعّله. أضف A Record باسم portal.lab.test إلى 192.168.60.10، وفعّل HTTP على Server نفسه.\n2. اضبط DNS Server في Pool على 192.168.60.10، وأعد اختيار DHCP على PC أو ضع DNS يدويًا للتجربة. تحقق من عنوان DNS المستلم.\n3. من PC جرّب nslookup portal.lab.test، ثم افتح Web Browser إلى http://portal.lab.test وإلى http://192.168.60.10. سجّل ماذا يثبت كل اختبار واحفظ day41-dns.pkt.",
+          "review": "إذا نجح فتح الصفحة بالـ IP وفشل بالاسم، ما أول إعدادين ستفحصهما؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "الفرق بين DNS NXDOMAIN وTimeout",
+          "subject": "الشبكات",
+          "description": [
+            "فشل DNS ليس حالة واحدة. NXDOMAIN يعني أن الرد يقول إن الاسم المطلوب غير موجود، أما Timeout فيعني أنك لم تتلق ردًا خلال الانتظار؛ قد يكون السبب Server غير متاح أو مسارًا أو قاعدة تمنع الطلب.",
+            "قد تحتفظ الأجهزة بنتيجة قديمة في Cache، لذلك قارِن الاسم المكتوب والـ DNS Server المستخدم والوقت. لا تفترض أن كل اختلاف يعني اختراقًا؛ خطأ كتابة الاسم أو تحديث سجل قد يفسر النتيجة.",
+            "سنكتب شجرة فحص صغيرة تبدأ بمعرفة نوع الفشل. إذا كانت المحاكاة تعرض رسالة عامة فقط، سجّل نصها كما هو واستخدم المثال النظري للمقارنة بدل الادعاء أنها أظهرت رمزًا لم تره."
+          ],
+          "objectives": [
+            "تفرق بين رد بعدم وجود الاسم وعدم استلام رد وتختار الفحص المناسب."
+          ],
+          "concepts": [
+            "DNS Response",
+            "NXDOMAIN",
+            "Timeout وCache"
+          ],
+          "keywords": [
+            "شرح بالعربي DNS troubleshooting NXDOMAIN vs timeout nslookup",
+            "DNS troubleshooting NXDOMAIN vs timeout nslookup beginner lab"
+          ],
+          "practice": "1. في مختبر DNS جرّب اسمًا موجودًا ثم اسمًا غير مضاف مثل missing.lab.test، وسجّل المخرجات الفعلية التي يعرضها PC.\n2. في نسخة المختبر غيّر DNS على PC إلى عنوان غير مستخدم ثم أعد الاستعلام. قارن ذلك بالاستعلام عن اسم غير موجود على Server الصحيح، ثم أعد الإعداد.\n3. اكتب إجراءً من ثلاث خطوات: تحقق من الاسم، تحقق من DNS Server والرد، ثم اختبر الوصول إلى الخدمة بالـ IP. أضف ملاحظة عن Cache وحدود ما ظهر في المحاكاة.",
+          "review": "لماذا يختلف سؤال هل هذا الاسم موجود عن سؤال هل وصلت إلى DNS Server؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "فهم الوقت وTime Zone داخل Logs",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "حدث عند 12:00 في بغداد قد يوافق حدثًا عند 09:00 UTC. إذا جمعت Logs دون الانتباه إلى Time Zone، قد ترتب الأحداث بشكل خاطئ وتعتقد أن الرد سبق الطلب أو أن الحادث امتد ساعات إضافية.",
+            "سنستخدم أوقاتًا بصيغة ISO 8601 تتضمن Offset مثل +03:00 أو +00:00. Python datetime يستطيع قراءتها ومقارنتها بعد تحويلها إلى UTC، بينما الوقت دون Offset يحتاج معرفة مصدره قبل تفسيره.",
+            "الغرض بناء Timeline موثوق لاحقًا. ستحتفظ أيضًا بالنص الأصلي للوقت حتى يستطيع من يراجع تقريرك معرفة ما قرأته وكيف أجريت التحويل."
+          ],
+          "objectives": [
+            "تحول أوقاتًا ذات Offset إلى UTC وتحدد حدثين وقعا في اللحظة نفسها."
+          ],
+          "concepts": [
+            "ISO 8601",
+            "UTC Offset",
+            "datetime في Python"
+          ],
+          "keywords": [
+            "شرح بالعربي Python datetime fromisoformat timezone UTC log timestamps",
+            "Python datetime fromisoformat timezone UTC log timestamps beginner lab"
+          ],
+          "practice": "1. أنشئ مثالين: 2026-12-01T12:00:00+03:00 و2026-12-01T09:00:00+00:00. اقرأهما باستخدام datetime.fromisoformat بعد import مناسب من datetime.\n2. استخدم astimezone(timezone.utc) لكل قيمة وقارن النتيجتين. أضف وقتًا ثالثًا بعد خمس دقائق ورتب القيم زمنيًا.\n3. جرّب وقتًا بلا Offset واكتب أنه يحتاج معلومة عن Time Zone قبل الدمج. لا تلصق +00:00 به تلقائيًا إلا إذا كان مصدر Log يؤكد أنه UTC.",
+          "review": "ما الخطأ في ترتيب أوقات أجهزة مختلفة حسب الساعة المكتوبة فقط؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 42,
+      "sessions": [
+        {
+          "title": "مراجعة خدمات الشبكة: DHCP ثم DNS ثم HTTP",
+          "subject": "الشبكات",
+          "description": [
+            "سنربط خدمات الأسبوع في رحلة واحدة: PC يحصل على الإعدادات من DHCP، يسأل DNS عن اسم Portal، ثم يرسل طلب HTTP إلى العنوان الناتج. كل مرحلة تعتمد على نتيجة المرحلة المناسبة قبلها.",
+            "إذا كان PC يحمل IP صحيحًا، فهذا لا يثبت أن DNS صحيح. وإذا كان DNS يجيب، فهذا لا يثبت أن TCP Port الخاص بالخدمة متاح؛ المطلوب أدلة منفصلة لكل مرحلة.",
+            "ستبني جدول تحقق قابلًا لإعادة الاستخدام في أي شبكة صغيرة. هذه مهارة تشخيص أساسية يحتاجها مختص الأمن حتى يميز خلل الخدمة عن قرار Firewall أو مشكلة في إعداد الجهاز."
+          ],
+          "objectives": [
+            "توثق رحلة الوصول إلى Portal وتحدد اختبارًا لكل مرحلة."
+          ],
+          "concepts": [
+            "إعداد العميل",
+            "تحويل الاسم",
+            "الوصول إلى الخدمة"
+          ],
+          "keywords": [
+            "شرح بالعربي DHCP DNS HTTP troubleshooting workflow Packet Tracer",
+            "DHCP DNS HTTP troubleshooting workflow Packet Tracer beginner lab"
+          ],
+          "practice": "1. افتح day41-dns واكتب إعدادات PC الحالية: IP وMask وGateway وDNS. تأكد أن العنوان جاء من Pool المقصودة.\n2. اختبر Gateway ثم Server بالـ IP، واستعلم عن portal.lab.test ثم افتح الصفحة. استخدم Simulation لمتابعة DNS وHTTP عندما تتوفر الأحداث.\n3. احفظ تقريرًا فيه أربع خانات: إعدادات DHCP، نتيجة DNS، اختبار الوصول، ونتيجة HTTP. أرفق في كل خانة نتيجة فعلية بدل كلمة يعمل وحدها.",
+          "review": "أي مرحلة تفحص إذا فتح الموقع بالـ IP فقط؟ وأي مرحلة إذا لم يحصل PC على IP صالح أصلًا؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "مختبر أعطال الخدمات: تغيير واحد كل مرة",
+          "subject": "الشبكات",
+          "description": [
+            "في هذه الجلسة سنختبر قدرتك على التشخيص بتعطيل إعداد واحد داخل نسخة المختبر. سترى أن رسائل المتصفح قد تتشابه رغم اختلاف السبب الذي يمنع الصفحة من الظهور.",
+            "سنقارن ثلاث حالات: DNS خاطئ، HTTP متوقف، وGateway خاطئ مع Server خارج Subnet. في كل مرة ستدوّن أي الاختبارات بقي يعمل، لأن النجاح الجزئي يضيّق قائمة الأسباب.",
+            "بعد الإصلاح أعد المسار كاملًا من إعداد PC إلى الصفحة. لا تغيّر إعدادين في الوقت نفسه؛ وإلا قد تصل إلى نجاح دون معرفة أي تعديل عالج العطل."
+          ],
+          "objectives": [
+            "تشخّص ثلاثة أعطال خدمات بأدلة وتعيد المختبر إلى الحالة السليمة."
+          ],
+          "concepts": [
+            "DNS خاطئ",
+            "خدمة HTTP متوقفة",
+            "فصل السبب عن العرض"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer troubleshoot DHCP DNS HTTP server lab",
+            "Packet Tracer troubleshoot DHCP DNS HTTP server lab beginner lab"
+          ],
+          "practice": "1. خذ نسخة من المختبر وسجّل القيم الأصلية. غيّر DNS في PC إلى عنوان غير مستخدم، ثم قارن فتح Portal بالاسم والـ IP وأعد DNS الصحيح.\n2. أوقف HTTP من Services على Server فقط، ثم اختبر nslookup وفتح الصفحة. أعد HTTP، ثم غيّر Gateway في PC واختبر Server البعيد وأعد Gateway.\n3. اكتب ثلاثة صفوف تحتوي العطل والاختبار الذي كشفه والإصلاح. نفّذ اختبارات الجلسة السابقة كاملة للتأكد من سلامة النسخة النهائية.",
+          "review": "إذا بقي DNS يرد بينما HTTP متوقف، ما الاستنتاج الصحيح وما الذي لا يثبته رد DNS؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "اختبار Script ببيانات صحيحة وناقصة",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "برنامج يعطي رقمًا دون رسالة خطأ قد يكون مخطئًا رغم ذلك. سنجهز عينات نعرف نتائجها مسبقًا حتى نختبر أن Script لا يعد نجاحًا كفشل ولا يخفي بيانات ناقصة.",
+            "سنفحص ملفًا عاديًا، وملفًا لا يحتوي أحداثًا، وملفًا فيه وقت أو حالة غير صالحين. بدل تجاهل الأخطاء بصمت، يجب أن يعرض البرنامج عدد الأحداث المقبولة والمرفوضة وسبب الرفض.",
+            "هذه الجلسة تبني عادة مهمة في الأتمتة الأمنية: التحقق من الأداة قبل الاعتماد على تقريرها. ابدأ بأمثلة صغيرة يمكنك حسابها يدويًا، ثم انتقل إلى ملفات أكبر."
+          ],
+          "objectives": [
+            "تثبت صحة محلل CSV على حالات مختلفة وتوضح ما استبعده."
+          ],
+          "concepts": [
+            "Expected Result",
+            "Input Validation",
+            "عدّ السطور المرفوضة"
+          ],
+          "keywords": [
+            "شرح بالعربي Python CSV log parser validation testing malformed rows",
+            "Python CSV log parser validation testing malformed rows beginner lab"
+          ],
+          "practice": "1. جهز ثلاثة ملفات CSV بنفس Header: ملف فيه 4 أحداث منها 2 failed، وملف Header فقط، وملف فيه حدثان صالحان وسطر بحالة unknown وآخر بوقت غير صالح.\n2. حدّث Script للتحقق من الحالة والوقت والحقول المطلوبة، مع عداد invalid ورسالة سبب للسطر المرفوض. لا تخلط رفض السطر مع result يساوي failed.\n3. شغّل الملفات وقارن بالنتائج المكتوبة مسبقًا. تحقق أن عدد السطور المقبولة والمرفوضة يطابق عدد صفوف البيانات وأن ملف Header فقط يعطي صفرًا دون انهيار.",
+          "review": "ما الفرق بين محاولة دخول فاشلة وسطر Log غير صالح؟ ولماذا يجب أن يظهر كلا العددين بشكل منفصل؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 43,
+      "sessions": [
+        {
+          "title": "كيف يغير PAT عنوان الاتصال ومنفذه؟",
+          "subject": "الشبكات",
+          "description": [
+            "عندما تشترك أجهزة بيتك في عنوان خارجي واحد، يساعد PAT على تمييز اتصالاتها باستخدام Ports مع العنوان. Router يحتفظ بترجمة تربط الاتصال الداخلي بما يظهر على الجهة الخارجية.",
+            "سنقرأ مثالًا فيه جهازان داخليان يطلبان خدمة خارجية. قد يظهران بعنوان واحد لكن بمنفذين مختلفين، لذلك لا يصح اعتبار Public IP وحده دليلًا على جهاز داخلي أو شخص معين.",
+            "NAT يغير معلومات العنونة، أما Firewall فيطبق سياسة السماح والمنع؛ قد يجمعهما الجهاز نفسه لكنهما وظيفتان مختلفتان. سنركز اليوم على قراءة الترجمة، ثم ننفذها في الجلسة التالية."
+          ],
+          "objectives": [
+            "تربط اتصالًا داخليًا بترجمته وتفرق بين NAT وسياسة الحماية."
+          ],
+          "concepts": [
+            "NAT وPAT",
+            "Inside Local وInside Global",
+            "جدول الترجمة"
+          ],
+          "keywords": [
+            "شرح بالعربي NAT PAT inside local inside global explained",
+            "NAT PAT inside local inside global explained beginner lab"
+          ],
+          "practice": "1. اكتب اتصالين من 192.168.30.10:51000 و192.168.30.20:51000 إلى 203.0.113.10:80. افترض أن Router يستخدم 10.0.0.1 كعنوان خارجي داخل المحاكاة.\n2. اقترح منفذين خارجيين مختلفين وارسم جدولًا يربط كل Inside Local بالـ Inside Global المناسب. هذا مثال محاكاة؛ العنوان 10.0.0.1 ليس Public IP على الإنترنت.\n3. تتبع رد Server إلى أحد المنفذين واشرح كيف تحدد الترجمة جهاز الوجهة الداخلي. اكتب سبب احتياجك إلى وقت الاتصال والمنفذ عند تحليل Logs خلف NAT.",
+          "review": "لماذا قد يظهر مستخدمان بعنوان خارجي واحد؟ وهل وجود NAT يعني أن لديك سياسة Firewall كافية؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تشغيل PAT ومشاهدة NAT Translations",
+          "subject": "الشبكات",
+          "description": [
+            "سنضيف PAT إلى مختبر Routerين، بحيث يترجم Router الأول اتصالات LAN إلى عنوانه على الوصلة الخارجية. كلمة overload تسمح باستخدام العنوان نفسه لاتصالات داخلية متعددة مع تمييزها.",
+            "سنحدد واجهة inside وواجهة outside، ثم نحدد شبكة المصدر التي نريد ترجمتها. ACL المستخدمة هنا لا تُطبق كقاعدة منع على الواجهة؛ هي تختار المصادر التي تشملها قاعدة NAT.",
+            "ستولد طلبًا ثم تقرأ جدول الترجمات بسرعة لأن الإدخالات قد تنتهي بعد فترة. نجاح الاختبار مع وجود الترجمة يثبت وظيفة مختلفة عن مجرد وجود Route إلى الشبكة البعيدة."
+          ],
+          "objectives": [
+            "تشغّل PAT في المحاكاة وتشرح الحقول الأساسية في جدول الترجمة."
+          ],
+          "concepts": [
+            "ip nat inside وoutside",
+            "overload",
+            "show ip nat translations"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer NAT PAT overload configuration",
+            "Packet Tracer NAT PAT overload configuration beginner lab"
+          ],
+          "practice": "1. افتح نسخة day38-static. على Router الأول ادخل interface g0/0 ثم ip nat inside، وعلى interface g0/1 نفّذ ip nat outside، ثم عد إلى configure terminal.\n2. أضف access-list 1 permit 192.168.30.0 0.0.0.255 ثم ip nat inside source list 1 interface g0/1 overload. أبقِ المسارات السابقة سليمة.\n3. من PC في LAN الأولى أرسل ping إلى 192.168.40.10، ثم على Router الأول اقرأ show ip nat translations وshow ip nat statistics. دوّن العنوان الداخلي وترجمته واحفظ day43-pat.pkt.",
+          "review": "ما وظيفة ACL 1 في هذا المختبر؟ ولماذا لا نسميها Firewall للواجهة بمجرد استخدامها مع NAT؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "حفظ تقرير التحليل بصيغة JSON",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "عندما يطبع Script نتائجه على الشاشة فقط، يصعب الرجوع إليها أو استخدامها في أداة أخرى. JSON صيغة تحفظ حقولًا وقيمًا يمكن للبرامج قراءتها، مثل total وfailed وinvalid وعدد الأحداث لكل IP.",
+            "سنحفظ التقرير في ملف جديد ونضيف اسم ملف المصدر والوقت الذي أُنشئ فيه. هذه المعلومات تساعد على معرفة ما الذي حللته فعلًا، خصوصًا إذا شغلت Script على ملفات متعددة.",
+            "ستعيد قراءة JSON وتقارن الأعداد مع مخرجات الشاشة. حفظ ملف بنجاح لا يضمن صحة محتواه، لذلك نحتاج تحققًا بسيطًا من القيم واسم المصدر."
+          ],
+          "objectives": [
+            "تنتج تقرير JSON يمكن قراءته مجددًا وتتأكد من صحة حقوله."
+          ],
+          "concepts": [
+            "JSON Object",
+            "json.dump وjson.load",
+            "فصل البيانات عن طريقة العرض"
+          ],
+          "keywords": [
+            "شرح بالعربي Python json dump load save analysis report",
+            "Python json dump load save analysis report beginner lab"
+          ],
+          "practice": "1. أضف إلى Script قاموس report يتضمن source_file وtotal وfailed وinvalid وby_ip. اجعل total واضحًا: عدد صفوف البيانات التي حاولت قراءتها دون Header.\n2. استخدم json.dump لكتابة report إلى report-day43.json مع encoding=\"utf-8\" وensure_ascii=False وindent=2. اختر ملف إخراج جديدًا حتى تحتفظ بتقاريرك السابقة.\n3. اقرأ الملف باستخدام json.load واطبع failed وinvalid. قارنها بالعد اليدوي، وتحقق أن مجموع الأحداث الصحيحة وinvalid يساوي total.",
+          "review": "ما الفرق بين ملف JSON يحوي تقريرك وملف Log الأصلي؟ ولماذا تحتاج اسم المصدر داخل التقرير؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 44,
+      "sessions": [
+        {
+          "title": "قراءة IPv6 وPrefix بطول /64",
+          "subject": "الشبكات",
+          "description": [
+            "IPv6 يستخدم عناوين أطول مكتوبة بأرقام Hexadecimal، لكنه لا يغير الحاجة إلى فهم الشبكة والوجهة والـ Gateway. سنتعلم قراءة عنوان مثل 2001:db8:10::10/64 وتحديد جزء الشبكة منه.",
+            "Link-Local يبدأ عادة ضمن fe80::/10 ويستخدم للتواصل على الوصلة المحلية. أما 2001:db8::/32 فهو نطاق مخصص للأمثلة في الدروس، ولن نتعامل معه كعنوان حقيقي قابل للوصول عبر الإنترنت.",
+            "IPv6 لا يستخدم Broadcast مثل IPv4، ويستعمل Multicast في وظائف منها اكتشاف الجيران. المطلوب اليوم فهم العنوان وكتابة أمثلة صحيحة، قبل مراقبة NDP في التطبيق."
+          ],
+          "objectives": [
+            "تقرأ عنوان IPv6 مختصرًا وتفرّق بين Link-Local وعنوان المثال ذي /64."
+          ],
+          "concepts": [
+            "IPv6 اختصار العنوان",
+            "Global وLink-Local",
+            "غياب Broadcast"
+          ],
+          "keywords": [
+            "شرح بالعربي IPv6 address compression slash 64 link local beginners",
+            "IPv6 address compression slash 64 link local beginners beginner lab"
+          ],
+          "practice": "1. اكتب الصورة الموسعة للعنوان 2001:db8:10::10 ثم اختصر 2001:0db8:0020:0000:0000:0000:0000:0001. راجع أن :: تستخدم مرة واحدة داخل العنوان.\n2. حدد Prefix للشبكتين 2001:db8:10::/64 و2001:db8:20::/64، واختر عنوانين مختلفين للأجهزة في كل واحدة.\n3. في Ubuntu اقرأ ip -6 addr أو اعرض IPv6 في Windows باستخدام ipconfig. سجّل أنواع العناوين التي تراها دون افتراض أن كل جهاز يملك IPv6 عامًا.",
+          "review": "هل يمكن كتابة :: مرتين في عنوان واحد؟ وما الفرق بين وظيفة Link-Local ووظيفة عنوان الشبكة في مختبرنا؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تجربة IPv6 وNDP في شبكة محلية",
+          "subject": "الشبكات",
+          "description": [
+            "في IPv4 استخدمنا ARP لاكتشاف MAC محلي، أما IPv6 فيستخدم Neighbor Discovery أو NDP ضمن ICMPv6. سننشئ جهازين في Prefix واحدة ونختبر الاتصال بينهما.",
+            "سنبدأ بعناوين ثابتة حتى يكون سبب كل نتيجة واضحًا، ثم نتعرف إلى فكرة Router Advertisement وSLAAC، حيث يستطيع الجهاز بناء إعداد IPv6 اعتمادًا على إعلانات Router.",
+            "الفائدة أن تتوقف عن التعامل مع IPv6 كحروف إضافية في ipconfig. ستعرف أنه مسار اتصال يحتاج أيضًا إعدادًا ومراقبة وسياسة، حتى لو كانت اختبارات IPv4 كلها ناجحة."
+          ],
+          "objectives": [
+            "تشغّل اتصال IPv6 محليًا وتربط اكتشاف الجار بـ ICMPv6."
+          ],
+          "concepts": [
+            "Neighbor Discovery",
+            "IPv6 ping",
+            "Neighbor Table"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer IPv6 NDP neighbor discovery SLAAC",
+            "Packet Tracer IPv6 NDP neighbor discovery SLAAC beginner lab"
+          ],
+          "practice": "1. في Packet Tracer أنشئ PCين وSwitch. أعطِ الأول 2001:db8:10::10 والثاني 2001:db8:10::20 مع Prefix Length يساوي 64، دون Gateway لهذا الاختبار المحلي.\n2. من PC الأول نفّذ ping 2001:db8:10::20. استخدم Simulation وأظهر ICMPv6 وتابع ما تعرضه المحاكاة من Neighbor Solicitation وNeighbor Advertisement.\n3. ارسم مقارنة صغيرة بين ARP في IPv4 وNDP في IPv6، ثم شاهد شرحًا قصيرًا لـ SLAAC وسجّل دور Router Advertisement. لا يشترط إعداد SLAAC في هذه الساعة.",
+          "review": "لماذا لا نبحث عن ARP Packet في اتصال IPv6؟ وما الذي يبقى مطلوبًا لحماية IPv6؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تشغيل Script على ملف تختاره باستخدام argparse",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "حتى الآن قد تضطر إلى تعديل اسم الملف داخل الكود في كل تشغيل. argparse يسمح بتحديد المدخل والمخرج عند تشغيل البرنامج، مثل اختيار events.csv واسم تقرير جديد دون تعديل المنطق.",
+            "سنضيف --input و--output مع شرح يظهر عبر --help. إذا كان الملف غير موجود، يجب أن يخبرك البرنامج بالمسار الذي تعذر فتحه بدل طباعة تقرير صفر قد تفهمه على أنه لا توجد أحداث.",
+            "هذه الخطوة تجعل الأداة التي تبنيها قابلة لإعادة الاستخدام. سنبقي الخيارات قليلة وواضحة، ونختبر تغيير الملف ومسار الإخراج وحالة غياب المدخل."
+          ],
+          "objectives": [
+            "تشغّل محلل Logs من Terminal بخيارات واضحة وتفهم أخطاء الملفات."
+          ],
+          "concepts": [
+            "Command Line Arguments",
+            "--input و--output",
+            "رسالة خطأ مفهومة"
+          ],
+          "keywords": [
+            "شرح بالعربي Python argparse input output file arguments tutorial",
+            "Python argparse input output file arguments tutorial beginner lab"
+          ],
+          "practice": "1. في نسخة analyze.py استورد argparse، وأنشئ ArgumentParser ثم أضف --input و--output باستخدام required=True. اقرأ القيم بعد parse_args.\n2. اربط القراءة بـ args.input والكتابة بـ args.output. تعامل مع FileNotFoundError برسالة تذكر المدخل، ولا تكتب تقريرًا ناجحًا عند فشل قراءة المصدر.\n3. جرّب python3 analyze.py --help ثم python3 analyze.py --input events.csv --output report-day44.json. جرّب اسم مدخل غير موجود وتأكد من وضوح الفشل.",
+          "review": "لماذا يختلف فشل فتح الملف عن ملف صحيح لا يحتوي أحداثًا؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 45,
+      "sessions": [
+        {
+          "title": "كتابة سياسة وصول قبل أوامر ACL",
+          "subject": "الشبكات",
+          "description": [
+            "سنعود إلى شبكة الموظفين والضيوف ونقرر ما الذي نريد السماح به. ابدأ بجملة واضحة مثل الضيوف يصلون إلى Web Server، لكن لا يصلون إلى أجهزة الموظفين، ثم حوّلها إلى حقول يمكن للجهاز فحصها.",
+            "ACL تفحص قواعد مرتبة، وتطبق أول قاعدة تطابق Packet. في ACL التي سنتعلمها توجد قاعدة منع ضمنية في النهاية، لذلك قد تمنع خدمة ضرورية إذا نسيت إضافة سماح مناسب قبل نهاية القائمة.",
+            "ستكتب أمثلة مسموحة وممنوعة قبل التطبيق. هذا يفيدك في مراجعة القاعدة وفي اختبارها؛ عبارة الشبكة محمية ليست نتيجة قابلة للقياس دون تحديد من يستطيع الوصول إلى ماذا."
+          ],
+          "objectives": [
+            "تحول حاجة عملية إلى قواعد مرتبة وحالات اختبار محددة."
+          ],
+          "concepts": [
+            "Source وDestination",
+            "Protocol وPort",
+            "ترتيب القواعد وImplicit Deny"
+          ],
+          "keywords": [
+            "شرح بالعربي extended ACL rule order implicit deny source destination ports",
+            "extended ACL rule order implicit deny source destination ports beginner lab"
+          ],
+          "practice": "1. اكتب جدولًا بأعمدة Source وDestination وProtocol وDestination Port وAction. استخدم VLAN 20 للضيوف وVLAN 10 للموظفين.\n2. أضف مثال السماح بـ TCP 80 إلى Web Server محدد، ومنع بقية الوصول من الضيوف إلى شبكة الموظفين. اكتب إن كان DNS يحتاج قاعدة منفصلة وفق مكان Server.\n3. مرّر ثلاثة اتصالات افتراضية عبر القواعد من الأعلى للأسفل وسجّل أول تطابق. أضف حالة لا تطابق أي سماح لشرح Implicit Deny.",
+          "review": "ماذا يحدث لو وضعت قاعدة سماح واسعة قبل منع محدد؟ ولماذا نختبر المنع مثلما نختبر السماح؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تطبيق Extended ACL بين VLANs",
+          "subject": "الشبكات",
+          "description": [
+            "سنطبق قاعدة محدودة في مختبر VLAN: نمنع المرور من شبكة الضيوف إلى شبكة الموظفين، مع السماح بباقي IP Traffic في هذا التمرين. Wildcard Mask يحدد الأجزاء التي يمكن أن تختلف في العنوان؛ لـ /24 نستخدم 0.0.0.255.",
+            "سنربط ACL بواجهة الضيوف في اتجاه in، أي أثناء دخول Packet من الضيوف إلى Router. كتابة ACL وحدها لا تغير المرور حتى تُطبق في المكان والاتجاه المناسبين.",
+            "هذه ACL تفحص Packets ولا تتبع حالة الاتصال مثل Stateful Firewall. قد تمنع أيضًا ردود الضيوف على طلبات بدأها الموظفون؛ سنلاحظ ذلك حتى لا نفسر القاعدة على أنها سياسة اتجاه واحد كاملة."
+          ],
+          "objectives": [
+            "تطبق ACL وتتحقق من أثرها وحدودها على الطلبات والردود."
+          ],
+          "concepts": [
+            "Wildcard Mask",
+            "ip access-group",
+            "اتجاه in عند دخول Router"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer extended ACL inbound inter VLAN routing",
+            "Packet Tracer extended ACL inbound inter VLAN routing beginner lab"
+          ],
+          "practice": "1. افتح نسخة day35-routing واختبر الاتصال قبل التغيير. في Router ادخل configure terminal ثم ip access-list extended GUEST_POLICY ثم deny ip 192.168.20.0 0.0.0.255 192.168.10.0 0.0.0.255 ثم permit ip any any ثم exit.\n2. ادخل interface g0/0.20 ثم ip access-group GUEST_POLICY in ثم end. أرسل ping من الضيوف إلى الموظفين وإلى Gateway الضيوف وقارن النتائج.\n3. اقرأ show access-lists. اختبر أيضًا طلبًا من الموظفين إلى الضيوف وتفسير ردّه المحجوب؛ احفظ day45-acl.pkt مع ملاحظة أن permit ip any any هنا مقصود للتدريب وليس سياسة نهائية لكل شبكة.",
+          "review": "أين تطبق القاعدة، وماذا يعني in هنا؟ ولماذا قد يفشل اتصال بدأ من الموظفين أيضًا؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "التحقق من IP وSubnet باستخدام Python",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "ظهور نص يشبه IP لا يعني أنه عنوان صحيح؛ مثل 999.1.1.1. مكتبة ipaddress في Python تتحقق من الصيغة وتساعدك على تحديد هل العنوان يقع داخل Subnet معينة.",
+            "سنستخدمها في محلل Logs لرفض العناوين غير الصالحة، ثم نضع تصنيفًا تدريبيًا لعناوين شبكة المختبر. الانتماء إلى شبكة داخلية لا يجعل الحدث موثوقًا تلقائيًا؛ هو معلومة سياقية فقط.",
+            "هذه مهارة مشتركة بين البرمجة والشبكات: تستخدم معرفة Subnet داخل أداة تحليل. سنختبر حدود الشبكة وعنوانًا خارجها وعنوانًا تالفًا بدل الاكتفاء بحالة ناجحة واحدة."
+          ],
+          "objectives": [
+            "تتحقق من IP برمجيًا وتصنف انتماءه إلى شبكة محددة دون خلط التصنيف بالثقة."
+          ],
+          "concepts": [
+            "ipaddress.ip_address",
+            "ip_network",
+            "التحقق من الانتماء إلى شبكة"
+          ],
+          "keywords": [
+            "شرح بالعربي Python ipaddress validate IP subnet membership",
+            "Python ipaddress validate IP subnet membership beginner lab"
+          ],
+          "practice": "1. في ملف مستقل استورد ipaddress وأنشئ network = ipaddress.ip_network(\"192.168.10.0/24\"). اختبر 192.168.10.10 و192.168.20.10 باستخدام ipaddress.ip_address(value) in network.\n2. جرّب 999.1.1.1 وتعامل مع ValueError برسالة invalid_ip. اختبر عنوان IPv6 صالحًا وسجل نوعه بدل افتراض أن كل المدخلات IPv4.\n3. أضف التحقق من العنوان إلى محلل CSV. أبقِ عداد invalid منفصلًا، وقارن النتائج قبل الإضافة وبعد إدخال صف بعنوان تالف.",
+          "review": "هل وجود IP داخل شبكة المؤسسة يثبت أن النشاط مسموح؟ وما الذي أثبته فحص ipaddress فعلًا؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 46,
+      "sessions": [
+        {
+          "title": "الفرق بين Stateless ACL وStateful Firewall",
+          "subject": "الشبكات",
+          "description": [
+            "رأيت كيف قد تمنع ACL ردًا مطلوبًا لأنها تفحص كل Packet وفق القواعد نفسها. Stateful Firewall يحتفظ بمعلومات عن الاتصالات، ويمكنه السماح بالرد المرتبط باتصال مسموح بدأ من الداخل.",
+            "هذا لا يعني أن كل رد آمن أو أن Firewall يفهم كل محتوى التطبيق. نحن نفصل بين سياسة بدء الاتصال وتتبع حالته وبين فحص ما يفعله المستخدم داخل الخدمة.",
+            "سنرسم اتصال HTTPS بدأه PC، ثم محاولة جديدة غير مطلوبة من الجهة المقابلة. الفائدة أن تكتب سياسة تعبر عن الاستخدام الحقيقي بدل فتح Ports كثيرة لمحاولة إصلاح الردود."
+          ],
+          "objectives": [
+            "تشرح لماذا يختلف رد اتصال مسموح عن اتصال جديد من الطرف الآخر."
+          ],
+          "concepts": [
+            "Connection State",
+            "حركة بدأت من الداخل",
+            "عودة الرد"
+          ],
+          "keywords": [
+            "شرح بالعربي stateful firewall vs stateless ACL connection tracking",
+            "stateful firewall vs stateless ACL connection tracking beginner lab"
+          ],
+          "practice": "1. ارسم PC يتصل بـ Server على TCP 443، واكتب Source Port مؤقتًا وDestination Port 443. اعكس العناوين والمنافذ في الرد.\n2. اكتب قرارًا لكل من: الطلب الأول المسموح، الرد المرتبط به، ومحاولة جديدة إلى Port آخر على PC. افترض Firewall يتتبع TCP ويحظر الاتصالات الجديدة غير المطلوبة.\n3. قارن المثال بنتيجة ACL في اليوم 45، واكتب لماذا لا يكفي قلب عناوين قاعدة واحدة لتكوين حماية Stateful كاملة.",
+          "review": "ما المعلومة الإضافية التي يستخدمها Stateful Firewall فوق حقول Packet الحالية؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "بناء جدول اختبارات لقواعد Firewall",
+          "subject": "الشبكات",
+          "description": [
+            "سياسة Firewall الجيدة تبدأ من خدمات يحتاجها كل قسم. سنضع موظفين وضيوفًا وServers، ونحدد من يحتاج DNS وHTTPS وإدارة الأجهزة، ثم نكتب سبب كل سماح.",
+            "اختبار الحماية يتضمن حالتين: خدمة مسموحة تعمل ومحاولة غير مطلوبة تُمنع. إذا اختبرت النجاح فقط، فقد تكون هناك قاعدة واسعة تسمح للجميع وتجعل كل التجارب تبدو ناجحة.",
+            "لن نحتاج تثبيت Firewall جديد اليوم. سنستخدم جدولًا ومحاكاة ACL المتاحة، ونميز ما اختبرناه فعلًا عما صممناه نظريًا حتى يبقى التقرير دقيقًا."
+          ],
+          "objectives": [
+            "تنتج سياسة صغيرة قابلة للاختبار وتفرق بين اختبار فعلي وتصميم مقترح."
+          ],
+          "concepts": [
+            "Allow وDeny Tests",
+            "أقل وصول مطلوب",
+            "توثيق استثناءات الخدمة"
+          ],
+          "keywords": [
+            "شرح بالعربي firewall rule matrix testing least privilege network segmentation",
+            "firewall rule matrix testing least privilege network segmentation beginner lab"
+          ],
+          "practice": "1. أنشئ جدولًا لثلاث مجموعات: STAFF وGUEST وSERVERS. اسمح للضيوف فقط بالخدمات المطلوبة، واقصر إدارة الأجهزة على مجموعة ADMIN افتراضية.\n2. لكل قاعدة اكتب مصدرًا ووجهة وخدمة وسببًا، ثم اختبار Allow واختبار Deny. راجع أن DNS قد يستخدم UDP وTCP حسب الحالة إذا كانت السياسة تسمح به.\n3. نفّذ اختبارات ACL التي يدعمها مختبرك وسجّل نتيجتها. علّم اختبارات Stateful بأنها تصميم غير منفذ في Packet Tracer المستخدم، ولا تعرضها كنتائج ناجحة.",
+          "review": "لماذا لا يكفي نجاح الصفحة لإثبات صحة سياسة الوصول؟ وما اختبار المنع الذي ستضيفه؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "استخدام SHA-256 للتحقق من تغيّر ملف",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "SHA-256 ينتج قيمة تعتمد على محتوى الملف. إذا تغير المحتوى، تتغير القيمة عادةً بشكل واضح؛ لذلك نستخدم Hash لمقارنة نسخة بمرجع نثق بمصدره أو للتحقق من بقاء ملف التدريب دون تغيير.",
+            "Hash ليس Encryption ولا يخبرك وحده أن الملف آمن. إذا استبدل شخص الملف والقيمة المرجعية معًا، فالمقارنة الجديدة لا تكشف التاريخ السابق؛ مصدر القيمة المرجعية مهم.",
+            "سنحسب Hash لملف Log ونسخته ثم نعدل النسخة ونقارن. هذا يهيئك لفهم حماية الأدلة والتحقق من Backup دون الخلط بين تطابق الملفات وصحة ما تحتويه."
+          ],
+          "objectives": [
+            "تثبت تغير محتوى نسخة وتشرح حدود ما تثبته SHA-256."
+          ],
+          "concepts": [
+            "Hash",
+            "Integrity",
+            "المقارنة مع قيمة مرجعية موثوقة"
+          ],
+          "keywords": [
+            "شرح بالعربي SHA256 file integrity checksum Linux Python hashlib",
+            "SHA256 file integrity checksum Linux Python hashlib beginner lab"
+          ],
+          "practice": "1. داخل Ubuntu انسخ ملف Log تدريبيًا إلى اسم جديد. نفّذ sha256sum على الملفين واحفظ القيمتين في ملاحظاتك؛ يجب أن تتطابقا إذا تطابق المحتوى.\n2. أضف سطرًا إلى النسخة فقط ثم أعد sha256sum. تحقق من تغير قيمة النسخة وبقاء قيمة الأصل كما هي.\n3. اكتب مثالًا لقيمة مرجعية موثوقة ومثالًا لقيمة لا تعرف مصدرها. إن بقي وقت، احسب القيمة نفسها عبر hashlib.sha256 في Python بقراءة الملف كـ bytes.",
+          "review": "هل Hash متطابق يثبت أن الملف خالٍ من مشكلة أمنية؟ وما الذي يثبته تحديدًا؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 47,
+      "sessions": [
+        {
+          "title": "كيف ترتبط أجهزة Wi-Fi بالشبكة؟",
+          "subject": "الشبكات",
+          "description": [
+            "Access Point يربط الأجهزة اللاسلكية بالشبكة، بينما Router يربط شبكات IP مختلفة؛ الجهاز المنزلي قد يجمع الوظيفتين. SSID هو اسم الشبكة الذي يظهر لك، ولا يثبت وحده هوية الجهة التي تقدمها.",
+            "الأجهزة تتشارك الوسط اللاسلكي، وقد يؤثر التداخل والمسافة والعوائق في الجودة. قوة الإشارة ليست قياسًا كاملًا للسرعة؛ قد تكون الإشارة جيدة بينما القناة مزدحمة أو اتصال الإنترنت نفسه بطيء.",
+            "سنرسم المسار من Laptop إلى Access Point ثم Switch وRouter، ونقرأ معلومات اتصالك الحالي دون تغيير إعداداته. الفائدة فصل مشكلة Wi-Fi المحلية عن مشكلة الخدمة البعيدة."
+          ],
+          "objectives": [
+            "تميز دور Access Point وتجمع معلومات مفيدة عن اتصال Wi-Fi."
+          ],
+          "concepts": [
+            "Access Point",
+            "SSID",
+            "Channel والتداخل"
+          ],
+          "keywords": [
+            "شرح بالعربي WiFi access point SSID channel interference fundamentals",
+            "WiFi access point SSID channel interference fundamentals beginner lab"
+          ],
+          "practice": "1. ارسم Laptop وAccess Point وSwitch وRouter وServer. حدد الجزء اللاسلكي والجزء السلكي من الرحلة.\n2. في Windows نفّذ netsh wlan show interfaces إذا كنت متصلًا بـ Wi-Fi، واقرأ SSID وSignal وChannel. إذا كنت تستخدم Ethernet، استخدم مثالًا تدريبيًا واكتب أن القياس الفعلي غير متاح.\n3. اكتب ثلاث فرضيات لبطء الاتصال: ضعف الإشارة، ازدحام القناة، أو بطء خدمة بعيدة. حدد اختبارًا يساعد على التفريق بينها بدل اعتبار Signal وحده حكمًا نهائيًا.",
+          "review": "هل ظهور SSID مألوف يثبت أنك متصل بالـ Access Point المقصود؟ ولماذا لا تعني إشارة قوية أن كل شيء سريع؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "حماية Wi-Fi وفصل Guest Network",
+          "subject": "الشبكات",
+          "description": [
+            "حماية Wi-Fi تتضمن طريقة دخول الأجهزة إلى الشبكة وما تستطيع الوصول إليه بعد الدخول. WPA2 مع AES أو WPA3 يحمي الاتصال وفق دعم الأجهزة، أما كلمة مرور صفحة إدارة Access Point فهي حساب مختلف يجب فهم دوره.",
+            "Guest Network تعطي الزائر اتصالًا مع تقليل وصوله إلى الأجهزة الداخلية إذا كان العزل مضبوطًا. مجرد تغيير SSID لا يضمن الفصل؛ يجب اختبار وصول الضيف إلى موارد الشبكة التي يفترض حجبها.",
+            "سنكتب إعدادًا مقترحًا ونطبقه في محاكاة إن توفرت الخيارات. إذا لم يدعم Packet Tracer خيارًا مثل WPA3، سجّل هذا القيد واستخدم الرسم بدل الادعاء أنك اختبرته."
+          ],
+          "objectives": [
+            "تكتب إعداد Wi-Fi واضحًا وتحدد اختبارًا يثبت عزل الضيوف."
+          ],
+          "concepts": [
+            "WPA2-AES وWPA3",
+            "Guest Isolation",
+            "إدارة Access Point"
+          ],
+          "keywords": [
+            "شرح بالعربي WPA2 AES WPA3 guest WiFi isolation security",
+            "WPA2 AES WPA3 guest WiFi isolation security beginner lab"
+          ],
+          "practice": "1. أنشئ جدولًا لشبكة الموظفين والضيوف يتضمن SSID ووسيلة الحماية والشبكة المرتبطة والوصول المسموح. اكتب كلمات مرور تدريبية مختلفة، دون استخدام كلماتك الحقيقية.\n2. في Packet Tracer افحص خيارات Wireless Router أو Access Point المتاح، وطبّق WPA2-AES إذا كان مدعومًا. افصل بين إعداد الاتصال اللاسلكي وحساب إدارة الجهاز.\n3. صمّم اختبارًا يسمح للضيف بخدمة عامة ويمنعه من Server داخلي وصفحة الإدارة. سجّل ما نفذته فعلًا وما بقي تصميمًا؛ لا تغيّر Router البيت ضمن هذا التمرين.",
+          "review": "ما الفرق بين كلمة مرور Wi-Fi وكلمة مرور إدارة الجهاز؟ وما الدليل العملي على Guest Isolation؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "إنشاء Backup واختبار Restore",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "وجود نسخة أخرى من الملف لا يكفي إذا لم تعرف هل تستطيع استعادتها وفتحها. سننسخ ملفات المختبر والتقرير إلى مكان آخر داخل مجلد التدريب، ثم نستعيدها إلى مجلد جديد ونقارن المحتوى.",
+            "نسخة على القرص نفسه مفيدة للتدريب لكنها لا تحمي من فقدان القرص بالكامل. في الاستخدام الحقيقي تحتاج نسخة مستقلة عن سبب العطل، مع معرفة أين تحفظها ومن يستطيع الوصول إليها.",
+            "ستقيس النجاح بفتح الملفات والتحقق من Hash لملف مختار. هذه المهارة مهمة في التعافي من الحوادث والأخطاء؛ الاستعادة التي لم تختبرها قد تفشل وقت الحاجة."
+          ],
+          "objectives": [
+            "تنفذ Restore تجريبيًا وتثبت أن الملفات المستعادة قابلة للاستخدام."
+          ],
+          "concepts": [
+            "Backup وRestore",
+            "نسخة مستقلة",
+            "التحقق بعد الاستعادة"
+          ],
+          "keywords": [
+            "شرح بالعربي backup restore testing file integrity cybersecurity basics",
+            "backup restore testing file integrity cybersecurity basics beginner lab"
+          ],
+          "practice": "1. اختر Script وCSV وتقريرًا من مجلد التدريب، وانسخها إلى مجلد backup-day47 مع تسجيل أسماء الملفات وتاريخ النسخة.\n2. استعد النسخ إلى مجلد restore-test جديد دون حذف الأصل. افتح CSV وشغّل Script على النسخة المستعادة إلى تقرير جديد.\n3. قارن Hash لملف المصدر والنسخة المستعادة، واكتب أين ستضع نسخة مستقلة عن القرص في خطة حقيقية وما الذي سيبقى ناقصًا في تمرين اليوم.",
+          "review": "لماذا لا تعد نسخة على القرص نفسه حماية كاملة من تعطل الجهاز؟ وكيف أثبتّ نجاح Restore؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 48,
+      "sessions": [
+        {
+          "title": "قراءة مسارات VPN وSplit Tunnel",
+          "subject": "الشبكات",
+          "description": [
+            "VPN يضيف مسارًا محميًا بين طرفين، لكن الأجهزة لا ترسل بالضرورة كل الحركة داخله. في Full Tunnel تمر عادةً الوجهات العامة عبر VPN، بينما Split Tunnel يوجه شبكات محددة فقط عبره حسب السياسة.",
+            "سنرسم موظفًا يصل إلى شبكة شركة 10.50.0.0/16 بينما يتصفح خدمات عامة. اختلاف المسارات قد يغير مكان مرور DNS والإنترنت، لذلك عبارة VPN متصل لا تثبت أن طلبًا معينًا استخدم Tunnel.",
+            "المطلوب فهم Routing المرتبط بـ VPN، لا شراء خدمة أو إعداد شبكة شركة حقيقية. هذه المعرفة تساعدك على تشخيص لماذا يعمل الإنترنت بينما تبقى خدمة داخلية غير متاحة."
+          ],
+          "objectives": [
+            "تحدد أي اتصال يستخدم VPN من جدول مسارات مبسط."
+          ],
+          "concepts": [
+            "VPN Tunnel",
+            "Full Tunnel وSplit Tunnel",
+            "Route إلى الشبكة المطلوبة"
+          ],
+          "keywords": [
+            "شرح بالعربي VPN split tunnel full tunnel routing table explained",
+            "VPN split tunnel full tunnel routing table explained beginner lab"
+          ],
+          "practice": "1. اكتب جدولًا افتراضيًا فيه Route إلى 10.50.0.0/16 عبر VPN وDefault Route عبر Router البيت. تتبع وجهة 10.50.2.10 ووجهة عامة ووضح الفرق.\n2. حوّل الرسم إلى Full Tunnel بتوجيه المسار الافتراضي عبر VPN، ثم قارن ما تغير وما لم يتغير في الحاجة إلى DNS وتصريح الوصول.\n3. اكتب ثلاثة أسباب لعدم فتح خدمة الشركة رغم اتصال VPN: Route ناقص، DNS غير مناسب، أو سياسة وصول. اربط كل سبب بفحص محدد.",
+          "review": "هل اتصال VPN يثبت أن كل حركة جهازك تمر داخله؟ ما الدليل الذي تحتاج قراءته؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "فهم TLS Certificate والتحقق من اسم الموقع",
+          "subject": "الشبكات",
+          "description": [
+            "HTTPS يستخدم TLS لحماية الاتصال والتحقق من الطرف وفق Certificate. المتصفح يفحص أمورًا منها اسم الموقع وفترة الصلاحية والجهة التي يثق بها لتوقيع الشهادة، وليس مجرد وجود تشفير.",
+            "قد يكون الاتصال مشفرًا لكن المتصفح لا يستطيع التأكد من الهوية بسبب اسم غير مطابق أو Certificate منتهية. كذلك وجود Certificate صحيحة لا يضمن أن محتوى الموقع صادق أو أن الخدمة خالية من ثغرات.",
+            "سنقرأ Certificate لموقع عام معروف من المتصفح ونحدد حقولها. الفائدة أن تفهم رسائل TLS وتعرف أي معلومة تثبت هوية الاتصال بدل الضغط على تجاوز التحذير دون فهم."
+          ],
+          "objectives": [
+            "تقرأ اسم الموقع والصلاحية والجهة المصدرة وتشرح حدود دلالة HTTPS."
+          ],
+          "concepts": [
+            "Certificate وHostname",
+            "Validity Period",
+            "Trust Chain"
+          ],
+          "keywords": [
+            "شرح بالعربي TLS certificate hostname validity trust chain browser",
+            "TLS certificate hostname validity trust chain browser beginner lab"
+          ],
+          "practice": "1. افتح https://www.cisco.com في المتصفح، ثم معلومات الاتصال والشهادة من القائمة بجانب العنوان؛ قد تختلف أسماء القوائم حسب المتصفح.\n2. سجّل الاسم أو Subject Alternative Names المناسب للموقع، وIssuer، وتاريخ بداية ونهاية الصلاحية. لا تنسخ قيمًا من فيديو لأن الشهادات تتغير.\n3. اكتب ما الذي سيفشل في ثلاث حالات افتراضية: الاسم مختلف، التاريخ خارج الصلاحية، والجهة غير موثوقة. قارن ذلك بموقع له شهادة صحيحة لكن محتواه مضلل.",
+          "review": "ما الفرق بين حماية الاتصال والحكم على محتوى الموقع؟ ولماذا يهم Hostname في فحص Certificate؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تحديد أولوية تحديث نظام أو برنامج",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "ليس كل جهاز متشابهًا في الأهمية أو التعرض. مشكلة في خدمة متاحة للإنترنت وتحمل بيانات حساسة قد تحتاج أولوية مختلفة عن مشكلة في برنامج غير مستخدم داخل مختبر معزول.",
+            "سنقرأ سيناريوهات تدريبية ونربط القرار بإصدار البرنامج والخدمة المعرضة وأهمية الجهاز وتوفر Patch. اسم CVE أو رقم شدة وحده لا يشرح كل أثر المشكلة في بيئتك.",
+            "المطلوب إعداد خطة تحديث تشمل نسخة يمكن الرجوع إليها واختبار الخدمة بعد التغيير. لا نحتاج تنزيل برنامج قديم ضعيف للتجربة؛ نركز على قرار دفاعي مبني على معلومات واضحة."
+          ],
+          "objectives": [
+            "ترتب تحديثات افتراضية حسب الخطر العملي وتكتب طريقة تحقق من نجاحها."
+          ],
+          "concepts": [
+            "Asset وExposure",
+            "Vulnerability وPatch",
+            "التحقق من الإصلاح"
+          ],
+          "keywords": [
+            "شرح بالعربي vulnerability management patch prioritization asset exposure basics",
+            "vulnerability management patch prioritization asset exposure basics beginner lab"
+          ],
+          "practice": "1. اكتب ثلاثة أصول افتراضية: Web Server عام، جهاز عمل داخلي، وبرنامج تدريب غير متصل. لكل أصل حدد البيانات التي يعالجها وكيف يصل الآخرون إليه.\n2. افترض توفر Patch لكل منها، ورتب التنفيذ مع ذكر سببين لكل أولوية. سجّل المعلومة الناقصة التي قد تغير الترتيب.\n3. اختر أصلًا واكتب خطة: تحقق من الإصدار، Backup أو نقطة رجوع مناسبة، تثبيت التحديث من المصدر الرسمي، ثم فحص الإصدار والخدمة. اترك التنفيذ الحقيقي خارج سيناريو اليوم.",
+          "review": "لماذا لا يكفي رقم الشدة وحده لترتيب كل التحديثات؟ وكيف تعرف أن التحديث لم يعطل الخدمة؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 49,
+      "sessions": [
+        {
+          "title": "تجهيز Wireshark وقراءة Packet List",
+          "subject": "الشبكات",
+          "description": [
+            "Packet Tracer يحاكي حركة الأجهزة، أما Wireshark فيعرض Packets من اتصال فعلي أو ملف Capture محفوظ. ستتعرف إلى قائمة Packets ثم تفاصيل البروتوكولات، وكيف تنتقل من عرض عام إلى حقل محدد.",
+            "اختيار Interface مهم: إذا التقطت من واجهة لا تحمل اتصالك فلن ترى الطلب المقصود. Display Filter يخفي ما لا يطابق شرط العرض، لكنه لا يحذفه من ملف Capture.",
+            "سنستخدم حركة جهازك التدريبية ووقت التقاط قصيرًا. الملف قد يتضمن أسماء مواقع ومعلومات اتصال، لذلك احفظه محليًا واختر حركة بسيطة يمكنك شرحها دون فتح حسابات شخصية أثناء التجربة."
+          ],
+          "objectives": [
+            "تفتح Capture وتحدد المصدر والوجهة والبروتوكول وتستخدم Display Filter."
+          ],
+          "concepts": [
+            "Capture Interface",
+            "Packet Details",
+            "Display Filter"
+          ],
+          "keywords": [
+            "شرح بالعربي Wireshark capture interface packet details display filter beginner",
+            "Wireshark capture interface packet details display filter beginner beginner lab"
+          ],
+          "practice": "1. نزّل Wireshark من https://www.wireshark.org/download.html وثبّته مع مكوّن الالتقاط Npcap عند طلبه في Windows. إذا كان مثبتًا، افتحه مباشرة.\n2. اختر Interface النشطة، وابدأ Capture قصيرًا ثم أرسل ping واحدًا إلى Gateway الخاص بك وأوقف الالتقاط. إذا لم ترد الشبكة، سجّل الطلب المرصود دون الادعاء بوجود رد.\n3. اكتب icmp في Display Filter، وافتح Packet Details وحدد Source وDestination وType. احفظ الملف باسم day49-local.pcapng؛ إذا منع النظام الالتقاط استخدم Sample Capture موثوقًا من Wireshark وسجّل مصدره.",
+          "review": "ما الفرق بين اختيار Interface وكتابة Display Filter؟ وهل اختفاء Packet من العرض يعني حذفها من الملف؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تحليل DNS Query وResponse في Wireshark",
+          "subject": "الشبكات",
+          "description": [
+            "سنبحث داخل Capture عن سؤال DNS والرد المرتبط به. ستقرأ الاسم المطلوب ونوع Record وعنوان Server، ثم تربط Query بالـ Response باستخدام Transaction ID وسياق الاتصال.",
+            "بعض المتصفحات تستخدم DNS مشفرًا، فلا تظهر الأسماء داخل حركة DNS التقليدية كما تتوقع. لذلك سنولد استعلامًا واضحًا باستخدام nslookup بدل استنتاج أن عدم رؤية dns يعني عدم استخدام DNS.",
+            "هذه أول قراءة عملية لخدمة درستها نظريًا. ستعرف ما الذي قاله Server فعلًا، وهل أعاد عنوانًا أم نتيجة أخرى، دون أن توسع الاستنتاج إلى نجاح الموقع كله."
+          ],
+          "objectives": [
+            "تربط استعلام DNS برده وتستخرج الاسم ونوع Record والنتيجة."
+          ],
+          "concepts": [
+            "dns Filter",
+            "Transaction ID",
+            "Query Name وAnswer"
+          ],
+          "keywords": [
+            "شرح بالعربي Wireshark DNS query response transaction ID nslookup",
+            "Wireshark DNS query response transaction ID nslookup beginner lab"
+          ],
+          "practice": "1. ابدأ Capture على Interface اتصالك، ثم في PowerShell نفّذ nslookup example.com، وأوقف الالتقاط بعد ظهور النتيجة.\n2. استخدم Display Filter يساوي dns، واختر Query تخص example.com ثم ابحث عن Response المرتبطة. سجّل Transaction ID وQuery Type وResponse Code وأي Answer ظاهرة.\n3. إذا لم تظهر حركة مناسبة بسبب إعدادات البيئة، افتح DNS Sample من https://wiki.wireshark.org/SampleCaptures بدل تغيير DNS الجهاز. اكتب مصدر Capture وحدود ما فحصته.",
+          "review": "هل DNS Response تحتوي عنوانًا تعني أن HTTP Service تعمل؟ ولماذا قد لا تظهر استعلامات المتصفح تحت فلتر dns؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "مراجعة Authentication وMFA بخطوات واقعية",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "Authentication تجيب عن سؤال كيف يثبت المستخدم أنه صاحب الحساب. كلمة المرور عامل يعتمد على شيء تعرفه، بينما Authenticator أو Security Key قد يضيف عاملًا يعتمد على شيء تملكه وفق طريقة الاستخدام.",
+            "سنرسم رحلة الدخول واستعادة الحساب، لأن حماية Login لا تكفي إذا كانت Recovery ضعيفة. سنميز أيضًا بين إضافة عامل مستقل وبين استخدام كلمتي مرور؛ الاثنتان ما زالتا من النوع نفسه.",
+            "المطلوب تحليل تصميم حساب تدريبي وكتابة إجراءات واضحة. لن تحتاج مشاركة رموز دخول أو Recovery Codes؛ احتفظ بالأمثلة افتراضية حتى تركز على سبب كل خطوة."
+          ],
+          "objectives": [
+            "تفسر استقلال عوامل MFA وتحدد نقطة ضعف محتملة في استعادة الحساب."
+          ],
+          "concepts": [
+            "Authentication",
+            "MFA Factors",
+            "Account Recovery"
+          ],
+          "keywords": [
+            "شرح بالعربي authentication MFA factors account recovery security basics",
+            "authentication MFA factors account recovery security basics beginner lab"
+          ],
+          "practice": "1. ارسم دخولًا بكلمة مرور ثم عامل ثانٍ، واكتب ما يعرفه المستخدم وما يملكه. قارن ذلك بكلمة مرور وسؤال سري من نوع معلومة معروفة.\n2. أضف سيناريو فقدان الهاتف: ما القناة التي تسمح بالاستعادة؟ وما الذي يجب التحقق منه قبل إعادة ضبط العامل؟ استخدم حسابًا افتراضيًا.\n3. اكتب قائمة قصيرة لحماية الحساب تشمل وسيلة Recovery ومراجعة الجلسات النشطة وتخزين Recovery Codes في مكان خاص. لا تسجل أي أسرار حقيقية داخل المنصة.",
+          "review": "لماذا لا تعد كلمتا مرور مختلفتان عاملين مستقلين؟ وكيف يمكن أن تضعف Recovery حماية Login؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 50,
+      "sessions": [
+        {
+          "title": "قراءة TCP Handshake واتصال كامل",
+          "subject": "الشبكات",
+          "description": [
+            "سنرى بداية TCP التي درستها في الشهر الأول داخل Capture: طلب SYN ثم رد SYN-ACK ثم ACK. هذه الخطوات تؤسس حالة الاتصال قبل انتقال بيانات التطبيق في المثال التقليدي.",
+            "Wireshark يجمع Packets المتعلقة باتصال في TCP Stream، مما يسهل تتبع الطرفين بدل قراءة حركة كثيرة مختلطة. Source Port وDestination Port يتبادلان الموقع في الرد، بينما يظل الاتصال متعلقًا بالطرفين نفسيهما.",
+            "سنستخدم Capture موثوقًا يحتوي اتصال TCP كاملًا حتى تكون البداية موجودة. فتح موقع حديث قد يستخدم HTTP/3 فوق QUIC بدل TCP، لذلك لا نعتبر غياب SYN خطأ إذا اخترنا بروتوكولًا آخر."
+          ],
+          "objectives": [
+            "تحدد بداية TCP وطرفي الاتصال وتختار Stream واحدة للتحليل."
+          ],
+          "concepts": [
+            "SYN وSYN-ACK وACK",
+            "TCP Stream",
+            "Connection Endpoints"
+          ],
+          "keywords": [
+            "شرح بالعربي Wireshark TCP handshake follow TCP stream analysis",
+            "Wireshark TCP handshake follow TCP stream analysis beginner lab"
+          ],
+          "practice": "1. من Samples الرسمية في Wireshark اختر Capture موصوفًا بأنه يحتوي HTTP فوق TCP أو اتصال TCP كاملًا، وسجّل اسم الملف ومصدره.\n2. استخدم tcp، ثم اختر Packet من الاتصال واضغط بزر الفأرة الأيمن واتبع Follow ثم TCP Stream. سجل قيمة tcp.stream التي يعرضها Filter للاتصال المختار.\n3. ارجع إلى قائمة Packets وحدد SYN وSYN-ACK وACK من Flags. اكتب عناوين الطرفين وPorts، وما إذا كان Capture يحتوي بداية الاتصال ونهايته.",
+          "review": "لماذا تحتاج معرفة هل Capture بدأ قبل الاتصال؟ وهل كل HTTPS في المتصفح يجب أن يظهر كـ TCP؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "ماذا تعني TCP Retransmission؟",
+          "subject": "الشبكات",
+          "description": [
+            "TCP قد يعيد إرسال بيانات عندما لا يحصل على التأكيد المتوقع في الوقت المناسب. Wireshark يستطيع وضع ملاحظات تحليلية مثل Retransmission، لكنها تحتاج قراءة السياق قبل تفسير السبب.",
+            "إعادة الإرسال قد ترتبط بفقدان أو تأخير أو مشكلة التقاط؛ ومن Capture واحدة قد لا تعرف أين حدث الخلل. لذلك لا نساوي تلقائيًا بين ملاحظة الأداة وهجوم أو عطل محدد في Router.",
+            "سنقارن Packet أعيد إرسالها بما سبقها وبـ ACK اللاحق، ونكتب فرضيتين مع ما نحتاجه للتمييز بينهما. هذه عادة مهمة عند تحليل أداء الشبكة والتنبيهات."
+          ],
+          "objectives": [
+            "تشرح ملاحظة Retransmission وتفصل المشاهدة عن تفسير السبب."
+          ],
+          "concepts": [
+            "Retransmission",
+            "ACK والتأخير",
+            "حدود Capture Point"
+          ],
+          "keywords": [
+            "شرح بالعربي Wireshark TCP retransmission duplicate ACK troubleshooting",
+            "Wireshark TCP retransmission duplicate ACK troubleshooting beginner lab"
+          ],
+          "practice": "1. افتح Sample Capture من Wireshark موصوفة بوجود TCP Retransmissions إن توفرت، أو استخدم Capture الحالية وسجّل إذا لم توجد حالات.\n2. جرّب Display Filter يساوي tcp.analysis.retransmission. في حالة موجودة اقرأ الوقت وSequence Number وACKs حولها، ثم اعرض Stream كاملة لفهم السياق.\n3. اكتب مشاهدة دقيقة مثل ظهر إرسال متكرر لنطاق بيانات، ثم فرضيتين محتملتين واختبارًا إضافيًا. لا تصنع نتيجة Retransmission إذا لم تظهر في الملف المختار.",
+          "review": "ما الفرق بين ملاحظة Wireshark والسبب الجذري؟ وما حدود تحليل اتصال من جهة واحدة؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تصميم صلاحيات باستخدام RBAC",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "بعد التأكد من هوية المستخدم، يبقى السؤال ماذا يسمح له أن يفعل. RBAC يربط الأذونات بأدوار مثل قارئ ومحرر ومسؤول، ثم يمنح المستخدم الدور المناسب بدل توزيع صلاحيات عشوائية لكل حساب.",
+            "سنصمم منصة تقارير تدريبية: القارئ يشاهد، والمحرر يضيف ويعدل التقارير المخصصة له، والمسؤول يدير الحسابات وفق الحاجة. نجاح Login لا يعني تلقائيًا السماح بالحذف أو قراءة بيانات الآخرين.",
+            "ستكتب اختبارات رفض أيضًا، لأن إخفاء زر من الواجهة لا يكفي لحماية العملية؛ Server يجب أن يتحقق من الصلاحية عند معالجة الطلب. اليوم تصميم وفحص حالات، دون تعديل منصة الدراسة نفسها."
+          ],
+          "objectives": [
+            "تبني مصفوفة Roles وصلاحيات وتحدد مكان التحقق الحقيقي من الوصول."
+          ],
+          "concepts": [
+            "Role-Based Access Control",
+            "Authentication وAuthorization",
+            "Least Privilege"
+          ],
+          "keywords": [
+            "شرح بالعربي RBAC authorization access control matrix least privilege",
+            "RBAC authorization access control matrix least privilege beginner lab"
+          ],
+          "practice": "1. أنشئ جدولًا بثلاثة Roles: Reader وEditor وAdmin، وأربع عمليات: View وCreate وEdit وDelete. حدد إذن كل دور مع سبب قصير.\n2. أضف شرط ملكية التقرير للمحرر: هل يسمح بتعديل تقرير مستخدم آخر؟ اكتب القرار بوضوح بدل الاكتفاء باسم الدور.\n3. اكتب ست حالات اختبار، منها Reader يحاول Delete وEditor يحاول تعديل تقرير لا يملكه. حدد الرد المتوقع وأين يجب أن ينفذ Server التحقق.",
+          "review": "هل اختفاء زر Delete كافٍ لمنع الحذف؟ وما الفرق بين هوية المستخدم وصلاحيته للعملية؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 51,
+      "sessions": [
+        {
+          "title": "قراءة ICMP ونتائج تتبع المسار",
+          "subject": "الشبكات",
+          "description": [
+            "ICMP لا يقتصر على ping. قد يحمل ردًا يشرح تعذر الوصول أو انتهاء TTL أثناء مرور Packet عبر Routers، وتستخدم أدوات تتبع المسار هذه المعلومات لفهم الطريق.",
+            "سنقارن Echo Reply مع Time Exceeded ورسالة Unreachable. معنى الرسالة يعتمد على نوعها ومصدرها؛ عدم الرد قد يكون بسبب سياسة تمنع ICMP ولا يثبت وحده توقف HTTP أو HTTPS.",
+            "سنربط رسائل ICMP بمواضع الأجهزة في مختبر Routerين. الفائدة أن تقرأ رسالة التشخيص بدل تحويل كل نتيجة إلى يعمل أو لا يعمل دون سبب."
+          ],
+          "objectives": [
+            "تفسر ثلاثة أنواع من ICMP وتحدد حدود دلالة ping وtracert."
+          ],
+          "concepts": [
+            "Echo Request وReply",
+            "TTL وTime Exceeded",
+            "Destination Unreachable"
+          ],
+          "keywords": [
+            "شرح بالعربي ICMP echo time exceeded destination unreachable traceroute",
+            "ICMP echo time exceeded destination unreachable traceroute beginner lab"
+          ],
+          "practice": "1. افتح مختبر Routerين السليم ونفّذ ping ثم tracert من PC إلى PC البعيد. دوّن أي عناوين ظهرت في الطريق.\n2. في Simulation أظهر ICMP وافتح تفاصيل الطلب والرد. استخدم Sample Capture موثوقًا لرسالة Time Exceeded أو Unreachable إذا لم يعرض المختبر كل نوع.\n3. اكتب جدولًا يربط Echo Reply بنجاح الرد، وTime Exceeded بانتهاء TTL، وUnreachable بسبب التعذر الذي يحدده Code. سجّل نوع الدليل الفعلي لكل مثال.",
+          "review": "إذا فشل ping لكن فتحت صفحة HTTPS، هل الجهاز متوقف؟ وكيف تفسر اختلاف الاختبارين؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "فهم MTU عندما تعمل طلبات وتتعطل أخرى",
+          "subject": "الشبكات",
+          "description": [
+            "MTU تحدد حجم IP Packet الذي يمكن تمريره على وصلة دون الحاجة إلى معالجة إضافية مثل Fragmentation في ظروف IPv4 المناسبة. إضافة VPN قد تقلل الحجم المتاح بسبب البيانات الإضافية حول Packet.",
+            "قد تنجح طلبات صغيرة بينما تفشل عمليات أكبر إذا تعثرت آلية اكتشاف Path MTU. هذا احتمال تشخيصي يحتاج دليلًا؛ لا يعني أن كل تحميل بطيء سببه MTU.",
+            "سنقرأ MTU في جهازك ونحل مثالًا حسابيًا بدل تعديل إعداد الشبكة عشوائيًا. الهدف فهم مكان هذا الفحص ضمن بقية الاختبارات بعد التحقق من العناوين والمسارات والخدمة."
+          ],
+          "objectives": [
+            "تشرح أثر الحجم وتفرق بين فحص MTU وتغييرها بلا دليل."
+          ],
+          "concepts": [
+            "MTU",
+            "Path MTU",
+            "التشخيص بحجم Packet"
+          ],
+          "keywords": [
+            "شرح بالعربي MTU path MTU discovery VPN packet size troubleshooting",
+            "MTU path MTU discovery VPN packet size troubleshooting beginner lab"
+          ],
+          "practice": "1. في Windows نفّذ netsh interface ipv4 show subinterfaces، أو في Ubuntu نفّذ ip link. سجل MTU لواجهة واحدة واسم البيئة التي قرأت منها.\n2. في مثال IPv4 برأس IP حجمه 20 بايت ورأس ICMP حجمه 8 بايت وMTU تساوي 1500، احسب أكبر Payload لـ ICMP دون تجاوزها: 1472 بايت. اكتب افتراضات هذا الحساب.\n3. ارسم Tunnel يضيف بيانات إضافية واشرح لماذا قد تقل المساحة المتاحة للطلب الأصلي. اكتب المعلومات التي ستجمعها قبل اقتراح تغيير MTU، ولا تغيّر قيم جهازك في هذا التمرين.",
+          "review": "لماذا لا يثبت نجاح Packet صغيرة أن كل الأحجام تمر؟ ولماذا يختلف حساب IPv6 عن المثال المبسط؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "قراءة HTTP Headers وCookies من التطبيق التدريبي",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "سنعود إلى HTTP ونقرأ ما يرسله المتصفح وما يعيده Server. Headers تحمل معلومات مثل نوع المحتوى وحالة الاستجابة وسياسة Cookie، بينما Body يحمل محتوى الصفحة أو البيانات.",
+            "Cookie قد ترتبط بجلسة المستخدم؛ Secure يقيّد إرسالها إلى اتصال آمن، وHttpOnly يمنع قراءتها عبر JavaScript المعتاد في الصفحة، وSameSite يساعد على ضبط إرسالها في سياقات مواقع أخرى. هذه الخصائص تعمل مع بقية تصميم الجلسة.",
+            "سنفحص صفحة تدريبية غير مسجلة الدخول ونقارن بأمثلة مكتوبة لـ Cookies. الهدف فهم الحقول والحدود، وليس جمع Cookies حقيقية أو نسخها إلى ملاحظات الدراسة."
+          ],
+          "objectives": [
+            "تحدد Headers الأساسية وتشرح دور خصائص Cookie دون اعتبارها حماية كاملة منفردة."
+          ],
+          "concepts": [
+            "Request وResponse Headers",
+            "Cookie Attributes",
+            "حدود التشفير"
+          ],
+          "keywords": [
+            "شرح بالعربي HTTP headers cookies Secure HttpOnly SameSite beginner",
+            "HTTP headers cookies Secure HttpOnly SameSite beginner beginner lab"
+          ],
+          "practice": "1. شغّل HTTP Server المحلي من اليوم 35 على 127.0.0.1، وافتح صفحته من متصفح متاح على الجهاز نفسه. افتح Developer Tools ثم Network وأعد تحميل الصفحة.\n2. اختر طلب الصفحة واقرأ Method وStatus وContent-Type من Headers. إذا لم يصل متصفح Windows إلى WSL، استخدم curl -I داخل Ubuntu وسجّل طريقة الفحص.\n3. حلل مثالًا مكتوبًا فقط: session=demo; Secure; HttpOnly; SameSite=Lax. اشرح كل خاصية، ودوّن أن Server التدريب البسيط لا ينشئ نظام Sessions تلقائيًا. أوقفه بعد الانتهاء.",
+          "review": "هل HttpOnly تمنع كل إساءة استخدام للجلسة؟ وما الفرق بين قراءة Cookie وإرسالها مع الطلب؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 52,
+      "sessions": [
+        {
+          "title": "قياس Latency وPacket Loss وبناء Baseline",
+          "subject": "الشبكات",
+          "description": [
+            "RTT هو الزمن ذهابًا وعودة الذي يقيسه اختبار مثل ping، ولا يساوي مباشرة سرعة تنزيل ملف. Packet Loss يعني عدم وصول الرد المتوقع ضمن الاختبار، وقد يرتبط بالشبكة أو بسياسة التعامل مع ICMP.",
+            "Baseline مجموعة قياسات في وضع طبيعي نرجع إليها عند ظهور تغير. رقم واحد من تجربة واحدة قد يتأثر بازدحام مؤقت، لذلك سنكرر قياسًا صغيرًا ونكتب الظروف بدل إطلاق حكم عام.",
+            "سنقارن استجابة Gateway باستجابة وجهة أخرى مسموحة. الفائدة أن نبدأ تحديد هل المشكلة قريبة من الجهاز أم تظهر بعد الخروج من الشبكة المحلية، مع الحفاظ على حدود الاستنتاج."
+          ],
+          "objectives": [
+            "تسجل قياسات قابلة للمقارنة وتفرق بين RTT وسعة الاتصال."
+          ],
+          "concepts": [
+            "RTT",
+            "Packet Loss",
+            "Baseline في ظروف معروفة"
+          ],
+          "keywords": [
+            "شرح بالعربي network latency RTT packet loss baseline ping",
+            "network latency RTT packet loss baseline ping beginner lab"
+          ],
+          "practice": "1. اعرف Gateway من ipconfig. في Windows نفّذ ping -n 10 متبوعًا بعنوانه، وسجّل متوسط الزمن وعدد الردود والوقت وهل اتصالك Wi-Fi أو Ethernet.\n2. كرر القياس مرة ثانية في ظروف مشابهة. إن كانت لديك وجهة أخرى في مختبرك تستجيب، نفّذ الاختبار نفسه إليها؛ إذا حُجب ICMP، دوّن ذلك ولا تختلق قياسًا.\n3. اكتب جدول Baseline واذكر عوامل قد تؤثر فيه مثل تنزيل يعمل أو انتقالك بعيدًا عن Access Point. لا تحوّل فرقًا صغيرًا إلى حكم هجوم دون أدلة أخرى.",
+          "review": "هل RTT منخفضة تضمن سرعة Download عالية؟ ولماذا نحتاج وقت الاختبار وظروفه مع الرقم؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "اتباع خطوات ثابتة لتشخيص خدمة بطيئة",
+          "subject": "الشبكات",
+          "description": [
+            "عندما يقول المستخدم إن الشبكة بطيئة، ابدأ بتحديد المقصود: جهاز واحد أم الجميع، موقع واحد أم كل الخدمات، ووقت محدد أم طوال اليوم. هذه الأسئلة تحول الشكوى العامة إلى مشكلة يمكنك اختبارها.",
+            "بعد تحديد النطاق، افحص الجهاز والوصلة والعنونة وDNS ومسار الخدمة حسب الأدلة. لا تحتاج تشغيل كل أداة في كل مرة؛ اختر الاختبار الذي يميز بين أكثر سببين احتمالًا.",
+            "سنستخدم سيناريو خدمة بطيئة ونكتب خطوات تشخيص ونتيجة محتملة لكل اختبار. الهدف خطة عمل مرتبة تستطيع شرحها، ثم تطبيق جزء منها على مختبرك."
+          ],
+          "objectives": [
+            "تحول شكوى عامة إلى فرضيات واختبارات ذات نتيجة قابلة للتفسير."
+          ],
+          "concepts": [
+            "نطاق المشكلة",
+            "فرضية قابلة للاختبار",
+            "تغيير واحد ثم تحقق"
+          ],
+          "keywords": [
+            "شرح بالعربي network troubleshooting methodology slow application isolate problem",
+            "network troubleshooting methodology slow application isolate problem beginner lab"
+          ],
+          "practice": "1. اكتب سيناريو: جهاز واحد يفتح Portal ببطء بينما جهاز آخر على LAN نفسها يفتحه طبيعيًا. حدد ثلاث معلومات تريد جمعها أولًا.\n2. رتب فحوصًا تشمل إعداد IP وDNS وقياس Gateway وزمن الطلب المحلي، واكتب ماذا سيتغير في فرضيتك إذا نجح أو فشل كل فحص.\n3. طبّق فحصين متاحين في مختبرك وسجّل النتائج الفعلية، ثم اكتب تغييرًا مقترحًا واحدًا وطريقة الرجوع عنه إذا لم يفد. افصل المقترح عن التغيير المنفذ.",
+          "review": "ما الفائدة من مقارنة جهازين يستخدمان الخدمة نفسها؟ ومتى يكون تبديل DNS اختبارًا غير مبرر؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "فهم Input Validation وParameterized Queries",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "أي قيمة تأتي من نموذج أو ملف أو طلب API تحتاج فحصًا قبل الاعتماد عليها. Input Validation يحدد نوع القيمة وحجمها ونطاقها، مثل قبول رقم موجب للعمر أو صيغة صحيحة لعنوان IP.",
+            "عند التعامل مع Database، لا يكفي التحقق الشكلي وحده؛ Parameterized Query تفصل نص SQL عن قيم المستخدم. هذه طريقة بناء صحيحة تمنع تفسير القيمة كجزء من تعليمات الاستعلام.",
+            "سنطبق مثالًا محليًا بسيطًا باستخدام sqlite3 المدمجة في Python. الهدف كتابة قراءة آمنة للبيانات وفهم سببها، دون اختبار مواقع أو حسابات الآخرين."
+          ],
+          "objectives": [
+            "تفرق بين التحقق من المدخلات وفصلها عن SQL وتطبق الاستعلام باستخدام Parameters."
+          ],
+          "concepts": [
+            "Untrusted Input",
+            "قواعد قبول البيانات",
+            "فصل البيانات عن SQL"
+          ],
+          "keywords": [
+            "شرح بالعربي Python sqlite3 parameterized queries input validation beginners",
+            "Python sqlite3 parameterized queries input validation beginners beginner lab"
+          ],
+          "practice": "1. أنشئ Script يستخدم sqlite3.connect(\":memory:\") ثم جدول users فيه عمود name نصي، وأضف اسمين تدريبيين باستخدام INSERT مع ? وParameters.\n2. استعلم بالأمر conn.execute(\"SELECT name FROM users WHERE name = ?\", (name,)) بعد تحديد name كنص تدريبي. قارن الفكرة ببناء SQL عبر دمج النصوص، دون استخدام الطريقة الثانية في التطبيق.\n3. جرّب اسمًا معروفًا واسمًا غير موجود واسمًا يحوي علامة apostrophe عادية. تحقق أن القيم تعامل كنص، ثم أضف حدًا لطول الاسم ورسالة واضحة عند تجاوزه.",
+          "review": "لماذا نحتاج Parameters حتى لو كان النموذج يفحص طول الاسم؟ وهل Input Validation تعني إزالة كل علامات الترقيم؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 53,
+      "sessions": [
+        {
+          "title": "جمع أحداث الشبكة باستخدام Syslog",
+          "subject": "الشبكات",
+          "description": [
+            "بدل الدخول إلى كل Router وSwitch لقراءة Logs، يمكن إرسال الأحداث إلى Syslog Collector مركزي. هذا يساعدك على مقارنة ما جرى على عدة أجهزة أثناء العطل نفسه.",
+            "الرسالة تحتاج وقتًا ومصدرًا ونوع حدث، وقد تتضمن Severity. ارتفاع المستوى لا يثبت وحده وجود هجوم؛ تغيير واجهة أثناء صيانة مقصودة قد يولد رسالة تستحق التفسير ضمن سياقها.",
+            "سنفعّل إرسال Logs في مختبر بسيط ونولد حدثًا عاديًا. إذا كانت المحاكاة تعرض عددًا محدودًا من الرسائل، نوثق ما ظهر فعلًا بدل افتراض أن كل وظائف Syslog الحقيقية مدعومة."
+          ],
+          "objectives": [
+            "تجمع حدثًا من Router على Server وتقرأ المصدر والرسالة."
+          ],
+          "concepts": [
+            "Syslog Collector",
+            "مصدر الحدث ومستواه",
+            "السجل المحلي والمركزي"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer syslog server router logging configuration",
+            "Packet Tracer syslog server router logging configuration beginner lab"
+          ],
+          "practice": "1. أنشئ Router 2911 وSwitch وServer-PT على LAN واحدة. اجعل Router هو 192.168.70.1/24 وServer هو 192.168.70.10/24، ثم اختبر الاتصال.\n2. على Server افتح Services ثم SYSLOG وفعّله. على Router من configure terminal جرّب logging 192.168.70.10، ثم تحقق من دعم الأوامر باستخدام ? إذا اختلفت الصورة.\n3. ولّد حدثًا على واجهة غير المستخدمة بإجراء no shutdown ثم shutdown في المحاكاة. اقرأ ما وصل إلى Collector وسجّل المصدر والرسالة والوقت الظاهر، أو سجّل قيد المحاكاة إن لم تصل رسالة.",
+          "review": "ما فائدة جمع Logs مركزيًا؟ ولماذا لا نحدد سبب الحادث من Severity وحدها؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "لماذا تحتاج الأجهزة وقتًا متقاربًا باستخدام NTP؟",
+          "subject": "الشبكات",
+          "description": [
+            "إذا كانت ساعة Router متقدمة عشر دقائق وساعة Server صحيحة، سيبدو ترتيب الحادث مختلفًا عن الواقع. NTP يساعد الأجهزة على مزامنة الوقت مع مصدر مناسب، بينما Time Zone تحدد طريقة عرض ذلك الوقت.",
+            "توحيد Time Zone في التقرير أو التحويل إلى UTC يسهل المقارنة، لكنه لا يصلح ساعة أصلية خاطئة تلقائيًا. يجب التمييز بين اختلاف عرض الساعة وبين اختلاف الوقت الذي يعرفه الجهاز.",
+            "سنفحص ساعة مختبر الشبكة ونرسم كيف يغير انحرافها Timeline. الفائدة أن تتأكد من الوقت قبل ربط رسالة Firewall بمحاولة Login على Server."
+          ],
+          "objectives": [
+            "تفرق بين Clock Skew وTime Zone وتوضح دور NTP في تحليل Logs."
+          ],
+          "concepts": [
+            "NTP",
+            "Clock وTime Zone",
+            "مقارنة الأحداث بين الأجهزة"
+          ],
+          "keywords": [
+            "شرح بالعربي NTP syslog time synchronization clock skew timezone",
+            "NTP syslog time synchronization clock skew timezone beginner lab"
+          ],
+          "practice": "1. في مختبر Syslog اقرأ show clock على Router وقارن الوقت بما يعرضه Server. سجل الملاحظة دون افتراض أن المحاكاة متزامنة تلقائيًا.\n2. إذا توفرت خدمة NTP في Server-PT، فعّلها وأضف ntp server 192.168.70.10 على Router ثم راقب حالة الساعة أو الارتباط بالأوامر المدعومة. إذا لم تدعمها الصورة، اكتفِ برسم الإعداد المتوقع.\n3. اكتب ثلاثة أحداث فعلية افتراضية في 09:00 و09:01 و09:02 UTC، واجعل ساعة أحد مصادرها متقدمة خمس دقائق. أعد بناء الترتيب بعد توثيق الانحراف.",
+          "review": "هل تغيير Time Zone يصلح ساعة متقدمة خمس دقائق؟ ولماذا نسجل مصدر الوقت عند التحقيق؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "بناء Timeline من أكثر من مصدر Logs",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "حدث واحد قد يعطي صورة ناقصة. يمكن أن يساعد جمع Login Log مع حدث Firewall أو تغيير ملف في فهم التسلسل، لكن تقارب الوقت وحده لا يثبت أن الأحداث مرتبطة بسبب واحد.",
+            "سنستخدم بيانات تدريبية ونحول أوقاتها إلى UTC، ثم نرتبها مع اسم المصدر ومعرّف الحدث. عند غياب معلومة سنكتب غير معروف بدل ملء الفجوة بتخمين يبدو كحقيقة.",
+            "المخرج Timeline قصيرة يمكن مراجعتها: ماذا حدث، ومتى، وأين الدليل. هذه مهارة أساسية قبل كتابة تقرير حادث أو اقتراح إجراء على جهاز."
+          ],
+          "objectives": [
+            "تدمج أحداثًا في Timeline مع الحفاظ على المصدر وحدود الاستنتاج."
+          ],
+          "concepts": [
+            "Event Correlation",
+            "مصادر متعددة",
+            "المشاهدة والاستنتاج"
+          ],
+          "keywords": [
+            "شرح بالعربي security log analysis event correlation timeline UTC",
+            "security log analysis event correlation timeline UTC beginner lab"
+          ],
+          "practice": "1. أنشئ ستة أحداث افتراضية: فشلا Login، نجاح Login، اتصال إلى خدمة، تعديل ملف، وخروج. وزعها على مصدرين مع أوقات تتضمن Offset.\n2. حوّل الأوقات إلى UTC يدويًا أو بكود اليوم 41، ثم رتبها في جدول يتضمن timestamp وsource وevent وevidence_id.\n3. اكتب ملاحظتين مدعومتين مباشرة بالجدول وفرضية واحدة تحتاج تحققًا. اذكر المعلومات اللازمة لربط الحساب بالاتصال دون الاعتماد على IP وحده.",
+          "review": "هل نجاح Login بعد فشلين يثبت اختراق الحساب؟ وما المعلومة الناقصة التي قد تغير التفسير؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 54,
+      "sessions": [
+        {
+          "title": "مراقبة حالة الشبكة وSNMP كمفهوم",
+          "subject": "الشبكات",
+          "description": [
+            "المراقبة تسأل باستمرار هل الأجهزة والخدمات تعمل وكيف يتغير استخدامها. عدد أخطاء واجهة أو ارتفاع استهلاكها قد يساعد على اكتشاف مشكلة قبل أن يشتكي المستخدم، لكن كل Metric يحتاج معنى ووحدة.",
+            "SNMP يسمح لـ Manager بطلب معلومات من Agent على جهاز الشبكة وفق الإعداد. سنفهم الدور العام وسبب أهمية تقييد وصول الإدارة؛ SNMPv3 يدعم Authentication وPrivacy عند ضبط مستوى الحماية المناسب.",
+            "لا نحتاج نشر SNMP في شبكة البيت. سنختار Metrics لمختبر صغير ونحدد قيمة طبيعية تقريبية ومتى يستحق التغير فحصًا، مع عدم تحويل Threshold إلى حكم نهائي بحدوث هجوم."
+          ],
+          "objectives": [
+            "تختار مؤشرات مراقبة وتشرح أدوار SNMP وحدود التنبيه بالعتبة."
+          ],
+          "concepts": [
+            "Availability وUtilization",
+            "SNMP Manager وAgent",
+            "Counters وThresholds"
+          ],
+          "keywords": [
+            "شرح بالعربي network monitoring SNMP manager agent SNMPv3 metrics",
+            "network monitoring SNMP manager agent SNMPv3 metrics beginner lab"
+          ],
+          "practice": "1. اكتب أربعة مؤشرات لمختبرك: حالة Interface، عدد Errors، RTT إلى Gateway، وتوفر خدمة HTTP. حدد طريقة قياس كل مؤشر ووحدته.\n2. ارسم SNMP Manager وجهازين Agent، وحدد من يُسمح له بالوصول إلى إدارة الأجهزة. قارن فكرة SNMPv3 المحمي بتبادل إعدادات إدارة دون حماية مناسبة.\n3. ضع Threshold تدريبيًا لمؤشر واحد واكتب لماذا اخترته وما الذي ستفحصه إذا تجاوزه. إذا لم تتوفر قياسات فعلية، سمّه افتراضًا يحتاج Baseline.",
+          "review": "لماذا لا تكفي مراقبة ping لمعرفة سلامة كل خدمة؟ وما الفرق بين قيمة مؤشر وقرار الاستجابة؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "الفرق بين IDS وIPS ومكان وضعهما",
+          "subject": "الشبكات",
+          "description": [
+            "IDS يراقب الحركة ويولّد تنبيهًا، بينما IPS الموضوع في مسار المرور يمكنه منع حركة حسب قواعده. مكان الأداة يحدد ما تستطيع رؤيته وما قد يتأثر إذا أخطأت أو تعطلت.",
+            "Signature تبحث عن نمط معروف، وAnomaly تبحث عن اختلاف عن سلوك معتاد وفق نموذج أو قاعدة. كلاهما قد يخطئ: False Positive تنبيه لنشاط سليم، وFalse Negative نشاط ضار لم يُكتشف.",
+            "سنختار موضعًا لأداة مراقبة على رسم الشبكة ونحل تنبيهين افتراضيين. الغرض فهم كيف تستخدم الأدلة وتراجع القرار، لا افتراض أن تثبيت أداة يجعل الشبكة محمية بالكامل."
+          ],
+          "objectives": [
+            "تفرق بين تنبيه ومنع وتفسر أثر موضع المراقبة واحتمال الخطأ."
+          ],
+          "concepts": [
+            "Detection وPrevention",
+            "Signature وAnomaly",
+            "False Positive"
+          ],
+          "keywords": [
+            "شرح بالعربي IDS IPS signature anomaly false positive false negative",
+            "IDS IPS signature anomaly false positive false negative beginner lab"
+          ],
+          "practice": "1. على رسم STAFF وGUEST وSERVERS حدد مكان IDS يستطيع رؤية حركة محددة، واكتب أي حركة لن يراها من هذا المكان.\n2. حلل تنبيهًا لارتفاع طلبات خدمة أثناء Backup معروف، وآخر لنشاط غير مفسر. لكل واحد اكتب معلومات التحقق قبل تسميته حادثًا.\n3. ارسم IPS في مسار الاتصال واكتب أثر قاعدة تمنع خدمة سليمة. حدد اختبارًا قبل تفعيل المنع وكيف ستعرف أن الخدمة المطلوبة ما زالت تعمل.",
+          "review": "هل تنبيه IDS يثبت حدوث هجوم؟ وكيف تختلف كلفة False Positive عندما تتحول القاعدة إلى منع آلي؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "كتابة قاعدة تنبيه بسيطة فوق محلل Logs",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "سنحوّل العد إلى قاعدة تدريبية: إذا ظهر خمس مرات failed أو أكثر من المصدر نفسه خلال نافذة محددة من خمس دقائق، ننتج تنبيهًا للمراجعة. تحديد الزمن جزء من القاعدة؛ خمس محاولات خلال شهر ليست مثل خمس خلال دقيقة.",
+            "لنبقي التنفيذ واضحًا، سنستخدم نافذة ثابتة نحدد بدايتها ونهايتها في كل تجربة، ونحسب الأحداث داخلها فقط. هذا أبسط من Sliding Window، وسنكتب هذا القيد في التقرير بدل ادعاء تغطية كل النوافذ الممكنة.",
+            "القاعدة لا تحظر أحدًا ولا تثبت اختراقًا. فائدتها ترتيب ما يحتاج فحصًا، مع إظهار IP والعدد والفترة والأحداث التي أدت إلى التنبيه."
+          ],
+          "objectives": [
+            "تنتج تنبيهًا قابلًا للتحقق ضمن نافذة وقت معلنة وتشرح حدوده."
+          ],
+          "concepts": [
+            "Detection Rule",
+            "Threshold وTime Window",
+            "التنبيه يحتاج تحقيقًا"
+          ],
+          "keywords": [
+            "شرح بالعربي Python failed login detection threshold time window log analysis",
+            "Python failed login detection threshold time window log analysis beginner lab"
+          ],
+          "practice": "1. جهز CSV فيه خمس حالات failed للمصدر 192.0.2.10 بين 09:00 و09:04 UTC، وحالة أخرى عند 09:10. اجعل نافذة التحليل من 09:00 شاملًا إلى 09:05 غير شامل.\n2. استخدم datetime للتحقق من start <= event_time < end، ثم Dictionary للعد. أضف إلى JSON تنبيهًا عندما يكون العدد 5 أو أكثر مع بداية النافذة ونهايتها.\n3. اختبر أربع حالات داخل النافذة فلا يظهر تنبيه، وخمسًا فيظهر. جرّب أحداثًا موزعة حول حد النافذة واشرح ما قد يفوته هذا التصميم الثابت.",
+          "review": "لماذا لا يكفي threshold دون تحديد الوقت؟ وما الذي قد يفوته استخدام نافذة ثابتة؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 55,
+      "sessions": [
+        {
+          "title": "تصميم مكان Servers وDMZ",
+          "subject": "الشبكات",
+          "description": [
+            "إذا احتاجت خدمة استقبال اتصالات من جهة عامة، لا نضعها تلقائيًا وسط أجهزة الموظفين بكل صلاحياتها. DMZ منطقة شبكة تخصص عادةً لخدمات تحتاج وصولًا مختلفًا، مع قواعد تحدد المرور منها وإليها.",
+            "الفصل يقلل أثر تعرض خدمة لمشكلة، لكنه لا يعمل بالرسم وحده. يجب أن تحدد ما الذي يسمح لـ Web Server الوصول إليه داخل الشبكة، وما الذي يمنعه Firewall بين المناطق.",
+            "سنرسم تصميمًا صغيرًا فيه جهة خارجية وDMZ وشبكة داخلية. في مشروع الشهر سنستخدم SERVERS داخلية فقط؛ فكرة DMZ توسع فهمك دون إلزامك ببناء كل بنية شركة في ساعة."
+          ],
+          "objectives": [
+            "تشرح سبب تخصيص DMZ وتكتب حدود الوصول للخدمة العامة."
+          ],
+          "concepts": [
+            "DMZ",
+            "Trust Boundary",
+            "الفصل بين الخدمة العامة والداخلية"
+          ],
+          "keywords": [
+            "شرح بالعربي DMZ network segmentation firewall architecture beginners",
+            "DMZ network segmentation firewall architecture beginners beginner lab"
+          ],
+          "practice": "1. ارسم ثلاث مناطق: EXTERNAL وDMZ وINTERNAL. ضع Web Server في DMZ وجهاز موظف داخل INTERNAL.\n2. اكتب سماحًا للخدمة المطلوبة من الخارج إلى Web Server، ثم امنع الوصول غير المطلوب من DMZ إلى أجهزة الموظفين. حدد وصول إدارة محدودًا من جهة ADMIN.\n3. حلل سيناريو تعرض Web Server لمشكلة: ما المسارات التي يجب أن تمنع انتقالها إلى الداخل؟ اكتب ما يحده التقسيم وما لا يضمنه وحده.",
+          "review": "هل وضع Server في VLAN باسم DMZ يحقق الحماية تلقائيًا؟ ما الذي يجب تطبيقه واختباره بين المناطق؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "فصل إدارة الأجهزة عن استخدام الخدمات",
+          "subject": "الشبكات",
+          "description": [
+            "إدارة Router أو Switch تسمح بتغيير الشبكة كلها، لذلك تختلف عن استخدام خدمة مثل فتح صفحة. Management Plane هي وظائف التحكم بالإعداد، ويجب أن يصل إليها الأشخاص والأجهزة التي تحتاجها فقط.",
+            "SSH يحمي جلسة الإدارة عند إعداده والتحقق من الطرف، بينما Telnet ينقل البيانات دون حماية تشفير مناسبة. لكن اختيار SSH وحده لا يحل صلاحيات الحسابات أو الوصول الواسع أو فقدان نسخة الإعداد.",
+            "سنراجع مخطط الوصول ونحفظ Config تدريبية ونحدد من يستطيع الإدارة. لا نحتاج إدخال كلمات مرور حقيقية أو تغيير Router البيت حتى نفهم هذه المبادئ ونختبرها على المحاكاة."
+          ],
+          "objectives": [
+            "تحدد طريق إدارة محدودًا وتجهز سجل إعدادات يمكن الرجوع إليه."
+          ],
+          "concepts": [
+            "Management Plane",
+            "SSH بدل Telnet",
+            "حسابات الإدارة وConfig Backup"
+          ],
+          "keywords": [
+            "شرح بالعربي network device management plane SSH Telnet configuration backup",
+            "network device management plane SSH Telnet configuration backup beginner lab"
+          ],
+          "practice": "1. في مختبرك اختر PC افتراضيًا للدور ADMIN واكتب عنوانه والأجهزة التي يحتاج إدارتها والخدمة المستخدمة.\n2. على Router وSwitch اقرأ show running-config واحفظ أجزاء الإعداد المتعلقة بـ Interfaces وVLANs وRoutes وACLs في تقريرك التدريبي، مع استبعاد أي بيانات اعتماد إن وجدت.\n3. اكتب خطة تحسين فيها SSH وحساب إداري مخصص وتقييد مصادر الإدارة ونسخة Config واختبار الوصول بعد التغيير. ميّز البنود المقترحة من البنود التي نفذتها فعلًا.",
+          "review": "لماذا لا ينبغي أن يصل Guest إلى صفحة إدارة Router؟ وهل استخدام SSH يغني عن تقييد الحساب والمصدر؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "خطوات التعامل مع تنبيه يحتاج تحقيقًا",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "عندما يظهر تنبيه، نحتاج أولًا معرفة ما الذي رصده وما الأجهزة أو الحسابات المتأثرة. Triage تعني فحصًا أوليًا يساعد على تحديد الأولوية وجمع المعلومات التي تمنع قرارًا متسرعًا.",
+            "Containment يهدف إلى تقليل استمرار الضرر، لكنه قد يؤثر في الخدمة؛ عزل جهاز مثلًا قد يوقف عملًا مهمًا أو يغير ما يمكن جمعه من أدلة. القرار يعتمد على السياق والصلاحية وخطة الاستجابة.",
+            "سنحل سيناريو افتراضيًا لتنبيه Login دون تنفيذ حظر حقيقي. ستكتب ما تعرفه، وما تحتاجه، ومن تتواصل معه ضمن المؤسسة المفترضة، وكيف تتحقق بعد الإجراء."
+          ],
+          "objectives": [
+            "تكتب استجابة أولية مبنية على الدليل وتحدد ما يحتاج تحققًا قبل الإجراء."
+          ],
+          "concepts": [
+            "Triage",
+            "Containment",
+            "حفظ الأدلة والتحقق"
+          ],
+          "keywords": [
+            "شرح بالعربي incident response triage containment evidence beginner scenario",
+            "incident response triage containment evidence beginner scenario beginner lab"
+          ],
+          "practice": "1. خذ تنبيه Script من اليوم 54 واكتب مصدره والفترة والعدد والحساب إن كان معلومًا. افصل ما يظهر في CSV عن الافتراضات حول صاحبه.\n2. اكتب ثلاث خطوات تحقق: مراجعة نجاحات Login القريبة، سؤال عن نشاط متوقع في السيناريو، ومقارنة مصدر آخر من Logs. حدد ما تحفظه قبل تعديل أي شيء.\n3. اقترح إجراء احتواء محدودًا في السيناريو مع سبب وشرط تنفيذ وأثر متوقع وطريقة تحقق. اختم بما تحتاج متابعته قبل إعلان انتهاء الحادث.",
+          "review": "لماذا لا نحظر كل IP ظهر في تنبيه آلي فورًا؟ وما الفرق بين تقليل الضرر وإثبات سبب الحادث؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 56,
+      "sessions": [
+        {
+          "title": "مراجعة حماية الشبكة: من السياسة إلى الدليل",
+          "subject": "الشبكات",
+          "description": [
+            "سنراجع العلاقة بين الفصل والسياسة والاختبار. VLAN تحدد المجموعة المحلية، وRouting يربط الشبكات، وACL أو Firewall يحدد المرور المطلوب وفق التصميم؛ لا تحل واحدة منها محل الوظائف الأخرى.",
+            "سنأخذ سياسة الضيوف ونطابق كل سطر فيها مع إعداد واختبار. إذا كانت السياسة تقول منع الوصول إلى الموظفين، يجب أن يثبت الاختبار ذلك مع بقاء الخدمة المقصودة متاحة.",
+            "هذه الجلسة تحضر للمشروع النهائي. المطلوب تقرير قصير يُظهر ما بنيته ونتيجته وحدوده، خاصة فرق ACL البسيطة عن Stateful Firewall."
+          ],
+          "objectives": [
+            "تربط كل هدف حماية بإعداد ودليل اختبار مناسب."
+          ],
+          "concepts": [
+            "VLAN وACL",
+            "مصفوفة الوصول",
+            "دليل Allow وDeny"
+          ],
+          "keywords": [
+            "شرح بالعربي network segmentation ACL validation security lab review",
+            "network segmentation ACL validation security lab review beginner lab"
+          ],
+          "practice": "1. افتح day45-acl واقرأ VLANs وRoutes وACL المطبقة. اكتب وظيفة كل جزء في جملة بسيطة مرتبطة بالرسم.\n2. اختبر منع GUEST إلى STAFF، والوصول إلى Gateway المحلي. أضف حالة رد على اتصال بدأه STAFF واشرح أثر ACL عليها.\n3. أنشئ جدول policy-evidence بثلاثة أعمدة: الهدف، الإعداد، والنتيجة الفعلية. ضع أي وظيفة غير منفذة مثل تتبع الحالة تحت بند حدود المختبر.",
+          "review": "كيف تثبت أن المنع مقصود من ACL وليس نتيجة Route مفقود أو IP خاطئ؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "مراجعة التشخيص: اختيار الأداة المناسبة",
+          "subject": "الشبكات",
+          "description": [
+            "الأدوات كثيرة، لكن فائدتها في السؤال الذي تجيب عنه. ipconfig يعرض إعداد الجهاز، وnslookup يختبر استعلام DNS، وWireshark يعرض الحركة التي وصلت إلى نقطة الالتقاط؛ لا تعطي كلها النتيجة نفسها.",
+            "سنحل أربع شكاوى ونختار أقل مجموعة فحوص تميز السبب. قد تحتاج مراجعة Gateway إذا كان المحلي يعمل والبعيد يفشل، أو فحص الخدمة إذا نجح DNS ولم تفتح الصفحة.",
+            "الفائدة أن تتعلم شرح لماذا شغلت الأداة وما الذي تغير في فهمك بعد نتيجتها. هذه طريقة عمل أكثر نفعًا من جمع صور لأوامر دون قرار واضح."
+          ],
+          "objectives": [
+            "تختار فحصًا مناسبًا لكل عرض وتكتب ما يثبته وما لا يثبته."
+          ],
+          "concepts": [
+            "ipconfig وRoute",
+            "nslookup وWireshark",
+            "اختبار الخدمة المطلوبة"
+          ],
+          "keywords": [
+            "شرح بالعربي network troubleshooting ipconfig nslookup route Wireshark practice",
+            "network troubleshooting ipconfig nslookup route Wireshark practice beginner lab"
+          ],
+          "practice": "1. اكتب أربع حالات: PC بلا IP صالح، موقع يعمل بالـ IP فقط، VLAN واحدة تفشل عبر Trunk، وTCP يعيد الإرسال في Capture.\n2. لكل حالة اختر أداة أو أمرين من الدروس السابقة، واكتب نتيجة تؤيد فرضيتك ونتيجة تدفعك إلى فحص سبب آخر.\n3. نفّذ حالتين داخل Packet Tracer بتغيير واحد في نسخة المختبر، ثم أصلحهما. احفظ سجل التشخيص مع ترتيب الاختبارات والنتيجة النهائية.",
+          "review": "هل يمكن لأداة واحدة إثبات سلامة كل طبقات الاتصال؟ كيف تعرف أن الاختبار الذي اخترته يجيب عن سؤالك؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "كتابة تقرير أمني واضح يمكن مراجعته",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "التقرير الجيد لا يكتفي بعبارات مثل توجد مشكلة أو الشبكة آمنة. يحدد الملاحظة ومصدرها وأثرها المحتمل والإجراء المقترح، ويترك للقارئ طريقًا لإعادة التحقق.",
+            "سنستخدم نتائجك الحقيقية من المختبر: ACL منعت حركة محددة أو Script أحصى أحداثًا داخل فترة. سنميز بين ما شاهدته وبين تفسيرك أو اقتراحك حتى لا تتحول فرضية إلى خبر مؤكد.",
+            "في النهاية ستكون لديك صفحة منظمة يفهمها شخص لم يشاهد عملك. هذه مهارة مهمة للعمل المهني لأنها تصل الجانب التقني بقرار عملي قابل للمتابعة."
+          ],
+          "objectives": [
+            "تكتب Finding موثقة مع توصية وحدود واضحة للفحص."
+          ],
+          "concepts": [
+            "Finding",
+            "Evidence",
+            "Recommendation وحدود الفحص"
+          ],
+          "keywords": [
+            "شرح بالعربي cybersecurity finding report evidence recommendation writing",
+            "cybersecurity finding report evidence recommendation writing beginner lab"
+          ],
+          "practice": "1. اختر نتيجة من شبكة المختبر ونتيجة من CSV. لكل واحدة اكتب العنوان، البيئة، وقت الفحص، الخطوات، والنتيجة الفعلية.\n2. أضف أثرًا محتملًا مدعومًا بالسيناريو، وتوصية محددة، وطريقة اختبارها بعد التنفيذ. إذا لم تثبت سببًا، اكتبه كفرضية تحتاج تحققًا.\n3. راجع التقرير بحثًا عن عبارات مطلقة مثل آمن تمامًا أو هجوم مؤكد. استبدلها بوصف ما أثبته الاختبار وحدوده، ثم احفظ report-week4.md أو ملف نصي.",
+          "review": "هل يمكن للقارئ إعادة ملاحظتك من التقرير؟ وما الفرق بين Evidence وRecommendation؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 57,
+      "sessions": [
+        {
+          "title": "مشروع الشهر: تصميم شبكة مكتب بثلاث مجموعات",
+          "subject": "الشبكات",
+          "description": [
+            "سنبدأ مشروعًا يجمع الشهر كله في مكتب صغير: موظفون وضيوف وServer داخلي يقدم صفحة تدريبية وDNS. سنستخدم VLAN 10 و20 و30 مع Router يربطها، ثم نضيف سياسة وصول محددة.",
+            "الموظفون يحتاجون خدمات Server، والضيوف يسمح لهم بـ DNS وHTTP على Server المحدد فقط، ويُمنعون من أجهزة الموظفين وبقية موارد SERVERS. سيكون هذا تصميم ACL تدريبيًا محدودًا ونوثق حدوده.",
+            "سنوزع التنفيذ على الأيام الأخيرة حتى تملك وقتًا للبناء والاختبار والإصلاح. اليوم تضع الرسم وجدول العناوين وقائمة النتائج المتوقعة، وهي المرجع الذي سنحاكم به نجاح المختبر."
+          ],
+          "objectives": [
+            "تنتج مخططًا وخطة عناوين وسياسة واضحة قبل إعداد الأجهزة."
+          ],
+          "concepts": [
+            "STAFF وGUEST وSERVERS",
+            "Address Plan",
+            "معايير نجاح المشروع"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer small office VLAN network security project",
+            "Packet Tracer small office VLAN network security project beginner lab"
+          ],
+          "practice": "1. ارسم Router 2911 وSwitch 2960 وأربعة PCs: اثنان للموظفين واثنان للضيوف، وServer-PT واحد. حدد المنافذ وTrunk بين Switch وRouter.\n2. خصص VLAN 10 للشبكة 192.168.10.0/24 وVLAN 20 للشبكة 192.168.20.0/24 وVLAN 30 للشبكة 192.168.30.0/24. اجعل Gateway .1 في كل شبكة وServer هو 192.168.30.10.\n3. اكتب ستة معايير: اتصال داخل كل VLAN، الوصول إلى Gateway، DNS صحيح، HTTP مسموح، منع GUEST إلى STAFF، ومنع GUEST إلى خدمة غير مصرح بها على Server. حدد الاختبارات قبل البدء.",
+          "review": "كيف تعرف أن المشروع نجح دون الاعتماد على شكله؟ ولماذا نكتب حالات المنع قبل تطبيق ACL؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "مشروع الشهر: بناء VLANs وRouting",
+          "subject": "الشبكات",
+          "description": [
+            "سننفذ الرسم خطوة بخطوة: إنشاء VLANs وربط المنافذ ثم Trunk وواجهات Router. لن نطبق المنع قبل نجاح الاتصال الأساسي، حتى نفصل أخطاء البناء عن أثر سياسة الحماية.",
+            "كل مجموعة تحصل على Gateway من Subinterface تخص VLAN نفسها. سيحمل Trunk الأرقام 10 و20 و30، ويجب أن تتوافق Tags في Router مع عضوية المنافذ في Switch.",
+            "في نهاية الساعة تحفظ نسخة تعمل قبل إضافة الخدمات وACL. هذه النسخة تساعدك على المقارنة والرجوع إذا أدى تعديل لاحق إلى نتيجة غير متوقعة."
+          ],
+          "objectives": [
+            "تبني شبكة المشروع وتثبت صحة VLANs وGateways والمسار بين المجموعات."
+          ],
+          "concepts": [
+            "Access Ports",
+            "Router Subinterfaces",
+            "حفظ مرحلة تعمل"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer three VLAN router on stick project",
+            "Packet Tracer three VLAN router on stick project beginner lab"
+          ],
+          "practice": "1. أنشئ VLAN 10 و20 و30 على Switch، وخصص منافذ PCs وServer كـ Access حسب جدولك. اضبط وصلة Router على Trunk يسمح بالمجموعات الثلاث.\n2. على Router أنشئ G0/0.10 وG0/0.20 وG0/0.30 مع encapsulation dot1Q المطابق وGateway .1 لكل شبكة، وفعّل G0/0. ضع عناوين ثابتة مؤقتًا على PCs وServer لاختبار البناء.\n3. اختبر داخل المجموعة وإلى Gateways وإلى Server. سجّل show vlan brief وshow interfaces trunk وshow ip interface brief، ثم احفظ month02-base.pkt.",
+          "review": "إذا نجحت VLAN 10 و20 وفشلت 30، كيف تفحص Access Port وTrunk وSubinterface بالترتيب؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "مشروع التحليل: إعداد بيانات ونتائج متوقعة",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "سنجهز ملفًا تدريبيًا معلوم المحتوى لاختبار الأداة النهائية. البيانات مصطنعة ولا تمثل حادثًا حقيقيًا؛ هدفها أن تعرف الإجابة قبل تشغيل Script حتى تكتشف أي خطأ في الحساب.",
+            "سنستخدم 24 صفًا: 20 حدثًا صالحًا و4 صفوف لا تستوفي الشروط. من الأحداث الصالحة توجد 12 حالة failed و8 success، وداخل نافذة الاختبار تظهر ست حالات failed من مصدر واحد.",
+            "ستكتب هذه الأعداد كمرجع مستقل عن البرنامج. التقرير النهائي يجب أن يطابقها ويشرح أسباب رفض الصفوف الأربعة، دون خلط فساد البيانات بمحاولات الدخول الفاشلة."
+          ],
+          "objectives": [
+            "تجهز Dataset قابلة للتحقق وورقة توقعات لا تعتمد على مخرجات Script."
+          ],
+          "concepts": [
+            "Synthetic Logs",
+            "Expected Counts",
+            "بيانات صحيحة وغير صالحة"
+          ],
+          "keywords": [
+            "شرح بالعربي Python security log analysis synthetic dataset test cases",
+            "Python security log analysis synthetic dataset test cases beginner lab"
+          ],
+          "practice": "1. أنشئ project-events.csv بالأعمدة timestamp,ip,result. أضف 6 أحداث failed من 192.0.2.10 بين 09:00 و09:04 UTC، و6 failed من 192.0.2.20 بعد 09:10، و8 success من المصدرين بأوقات صالحة.\n2. أضف 4 صفوف مع عيب واحد في كل صف: IP مفقود، IP غير صالح، وقت غير صالح، وحالة unknown. اجعل باقي الحقول صحيحة حتى تعرف سبب الرفض تحديدًا.\n3. اكتب expected-results.txt: total=24 وvalid=20 وinvalid=4 وfailed=12 وsuccess=8. للنافذة [09:00,09:05) توقع تنبيهًا واحدًا للمصدر 192.0.2.10 بعدد 6. استخدم تاريخًا واحدًا وأوقاتًا صريحة +00:00.",
+          "review": "لماذا نكتب الأعداد المتوقعة قبل تشغيل البرنامج؟ وكيف يجعل وجود عيب واحد في كل صف التشخيص أسهل؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 58,
+      "sessions": [
+        {
+          "title": "مشروع الشهر: تشغيل DHCP وDNS وHTTP",
+          "subject": "الشبكات",
+          "description": [
+            "بعد نجاح الشبكة الأساسية سنضيف الخدمات التي يستخدمها المكتب. Router يوزع إعدادات الموظفين والضيوف عبر Pool لكل شبكة، وServer ثابت العنوان يقدم DNS وصفحة HTTP تدريبية.",
+            "سنستخدم portal.lab.test كاسم داخلي، ونوجهه إلى 192.168.30.10. بما أن Router نفسه يوفر DHCP على VLANs المتصلة، لا نحتاج Relay في هذا التصميم؛ قارن ذلك بمختبر اليوم 40.",
+            "سنختبر الخدمات قبل ACL ونحتفظ بالنتائج كمرجع. HTTP هنا مناسب لمحاكاة الحقول والطلب؛ الخدمة الحقيقية التي تحمل معلومات حساسة تحتاج HTTPS وتصميمًا مناسبًا خارج نطاق هذا المختبر."
+          ],
+          "objectives": [
+            "تشغّل خدمات المشروع وتثبت أن إعداد العميل وDNS والصفحة صحيحة قبل المنع."
+          ],
+          "concepts": [
+            "DHCP Pools لكل VLAN",
+            "A Record للـ Portal",
+            "اختبار الخدمة من العميل"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer DHCP pools VLAN DNS HTTP integrated lab",
+            "Packet Tracer DHCP pools VLAN DNS HTTP integrated lab beginner lab"
+          ],
+          "practice": "1. على Router استثنِ .1 إلى .20 من التوزيع في شبكتي 192.168.10.0/24 و192.168.20.0/24. أنشئ Pool باسم STAFF وأخرى GUEST، مع network وdefault-router الصحيحين وdns-server 192.168.30.10.\n2. اختر DHCP على PCs، وأبقِ Server ثابتًا عند 192.168.30.10/24 وGateway 192.168.30.1. في Services فعّل DNS وأضف portal.lab.test إلى عنوان Server، ثم فعّل HTTP.\n3. من موظف وضيف اقرأ IP وGateway وDNS، ثم نفّذ nslookup portal.lab.test وافتح http://portal.lab.test. سجّل النتائج واحفظ month02-services.pkt.",
+          "review": "لماذا لا نحتاج ip helper-address هنا؟ وكيف تعرف أن DNS الموزع عبر DHCP هو المقصود؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "مشروع الشهر: السماح بالخدمات المطلوبة وحجب الباقي",
+          "subject": "الشبكات",
+          "description": [
+            "سنطبق سياسة GUEST: السماح بطلب DHCP وDNS وHTTP إلى Server المحدد، وبـ ping إلى Gateway المحلي للاختبار، ثم منع بقية حركة IPv4 القادمة من الضيوف. الموظفون لا تدخل حركتهم عبر هذه الواجهة.",
+            "DHCP الأول قد يبدأ قبل أن يملك الجهاز IP، لذلك نحتاج سماحًا يناسب طلب العميل من UDP 68 إلى UDP 67. لو سمحنا فقط بمصدر من شبكة الضيوف، فقد نمنع طلب الحصول على العنوان نفسه.",
+            "الهدف اختبار سياسة فعلية مع الخدمات، لا مجرد نجاح ACL في حجب كل شيء. سنوثق أن هذه السياسة تخص IPv4 في المحاكاة، وأنها Stateless وقد تمنع ردودًا على اتصالات بدأت من مناطق أخرى."
+          ],
+          "objectives": [
+            "تطبق سياسة دقيقة للضيوف وتثبت عمل الخدمات واستمرار المنع."
+          ],
+          "concepts": [
+            "Extended ACL",
+            "DHCP وDNS وHTTP",
+            "اختبارات منع مع استمرار الخدمات"
+          ],
+          "keywords": [
+            "شرح بالعربي extended ACL permit DHCP DNS HTTP deny guest VLAN Packet Tracer",
+            "extended ACL permit DHCP DNS HTTP deny guest VLAN Packet Tracer beginner lab"
+          ],
+          "practice": "1. على Router من configure terminal أنشئ ip access-list extended GUEST_FINAL. أضف بالترتيب: permit udp any eq 68 any eq 67، ثم permit udp 192.168.20.0 0.0.0.255 host 192.168.30.10 eq 53، ثم permit tcp 192.168.20.0 0.0.0.255 host 192.168.30.10 eq 53.\n2. أضف permit tcp 192.168.20.0 0.0.0.255 host 192.168.30.10 eq 80، ثم permit icmp 192.168.20.0 0.0.0.255 host 192.168.20.1، ثم deny ip any any. اخرج إلى إعداد interface g0/0.20 وطبّق ip access-group GUEST_FINAL in.\n3. أعد طلب DHCP من Guest واختبر DNS وHTTP وping إلى Gateway. اختبر منع ping إلى STAFF وServer، واقرأ show access-lists. احفظ month02-policy.pkt مع جدول النتائج وحدود IPv4 وStateless.",
+          "review": "لماذا وضعنا سماح DHCP رغم أن العميل لم يحصل على IP بعد؟ وكيف تثبت أن HTTP مسموح بينما ICMP إلى Server ممنوع؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "مشروع التحليل: تجميع الأداة والتقرير",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "سنضم الأجزاء التي بنيتها إلى analyze.py واحدة: قراءة CSV، والتحقق من الوقت وIP والحالة، وعد النتائج، ثم استخراج تنبيهات النافذة المحددة وحفظ JSON. لا تحتاج إعادة كتابة كل شيء من الصفر.",
+            "سنعرض total وvalid وinvalid وsuccess وfailed مع أسباب رفض الصفوف وأرقامها. التنبيه سيذكر المصدر والفترة والعدد، حتى تستطيع الرجوع إلى الأسطر التي أدت إليه.",
+            "هذه أداة تدريب لتحليل ملف محفوظ، وليست نظام مراقبة كاملًا. قيمتها أنك تفهم كل خطوة ويمكنك إثبات نتيجتها على Dataset معلومة بدل الاعتماد على كود لا تعرف ماذا يحسب."
+          ],
+          "objectives": [
+            "تشغّل أداة واحدة تنتج أعدادًا وتنبيهًا مطابقين لتوقعات المشروع."
+          ],
+          "concepts": [
+            "قراءة CSV والتحقق",
+            "عدادات ونافذة وقت",
+            "JSON Report قابل للمراجعة"
+          ],
+          "keywords": [
+            "شرح بالعربي Python CSV security log analyzer JSON report argparse project",
+            "Python CSV security log analyzer JSON report argparse project beginner lab"
+          ],
+          "practice": "1. اجمع Functions السابقة في analyze.py، واستخدم argparse للمدخل والمخرج. حافظ على التحقق من الحقول وIP ووقت ذي Offset وحالة success أو failed قبل عد الحدث.\n2. ثبّت نافذة المشروع من 09:00 شاملًا إلى 09:05 غير شامل في التاريخ الذي اخترته، وحوّل الأوقات إلى UTC. احسب failed حسب IP داخلها وأضف alert عند العدد 5 أو أكثر.\n3. شغّل python3 analyze.py --input project-events.csv --output project-report.json. قارن جميع الأعداد مع expected-results.txt، وتحقق من تنبيه واحد للمصدر 192.0.2.10 بعدد 6 ومن أربعة أسباب رفض واضحة.",
+          "review": "هل التقرير يوضح الفترة التي حللتها والصفوف التي استبعدتها؟ وما الفرق بين عدد failed الكلي وعددها داخل نافذة التنبيه؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 59,
+      "sessions": [
+        {
+          "title": "مشروع الشهر: اختبار أعطال مقصودة وإصلاحها",
+          "subject": "الشبكات",
+          "description": [
+            "الشبكة التي تعمل مرة واحدة ليست نهاية التعلم. سنضع أعطالًا صغيرة داخل نسخ منفصلة ونستخدم الأدلة لتحديد السبب، ثم نتأكد أن الإصلاح لم يكسر سياسة الوصول أو خدمة أخرى.",
+            "سنختبر VLAN 30 مستبعدة من Trunk، وDNS خاطئًا عند عميل، وقاعدة ACL مرتبة بشكل يمنع HTTP قبل السماح له. كل عطل يختبر جزءًا مختلفًا من مسار الخدمة.",
+            "سجل السبب والدليل والتعديل الذي أصلحه. هذه الملاحظات ستدخل التقرير النهائي وتبين قدرتك على التشخيص، لا مجرد نسخ إعداد يعمل."
+          ],
+          "objectives": [
+            "تصلح ثلاثة أعطال وتعيد اختبارات الخدمة والحماية بعد كل إصلاح."
+          ],
+          "concepts": [
+            "نسخة قبل التغيير",
+            "Fault Isolation",
+            "Regression Check"
+          ],
+          "keywords": [
+            "شرح بالعربي Packet Tracer final network troubleshooting VLAN DNS ACL order",
+            "Packet Tracer final network troubleshooting VLAN DNS ACL order beginner lab"
+          ],
+          "practice": "1. احفظ نسخة سليمة من month02-policy. في نسخة أولى استبعد VLAN 30 من Trunk ثم شخّص show interfaces trunk وأعد 10,20,30.\n2. في نسخة ثانية غيّر DNS لجهاز واحد، وقارن فتح الصفحة بالاسم والـ IP ثم أعد الإعداد. في نسخة ثالثة أنشئ ACL تجريبية تضع منع HTTP قبل سماحه وفسر أثر أول تطابق، ثم أعد GUEST_FINAL السليمة.\n3. لكل حالة اكتب العرض والفحص والسبب والإصلاح. أعد اختبارات DHCP وDNS وHTTP ومنع GUEST إلى STAFF بعد الإصلاح واحفظ النتائج الفعلية.",
+          "review": "كيف تفرق بين منع HTTP من ACL وبين تعطل Server؟ وما الاختبار الذي يكشف أن الإصلاح فتح وصولًا غير مطلوب؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "مشروع الشهر: توثيق الشبكة وتسليم ملف مرتب",
+          "subject": "الشبكات",
+          "description": [
+            "الآن سنحول المختبر إلى مشروع يمكنك عرضه وشرحه. شخص يفتحه يجب أن يعرف أسماء الأجهزة والعناوين والـ VLANs والخدمات والسياسة، دون الحاجة لسماع القصة كلها منك.",
+            "سنحتفظ بملف Packet Tracer وملخص إعدادات وجدول اختبارات ناجحة وممنوعة. سنذكر حدود المحاكاة وأن سياسة المثال لا تشمل IPv6 أو Stateful Inspection أو إدارة هوية كاملة.",
+            "المطلوب جودة التوثيق لا كثرة الصفحات. اكتب ما بنيته واختبرته وما يحتاج تطويرًا في شهر لاحق، حتى يكون المشروع أساسًا يمكن تحسينه."
+          ],
+          "objectives": [
+            "تجهز ملف مشروع يمكن لشخص آخر فتحه وإعادة اختباره."
+          ],
+          "concepts": [
+            "Network Diagram",
+            "Config وTest Results",
+            "Known Limitations"
+          ],
+          "keywords": [
+            "شرح بالعربي network lab documentation diagram IP plan test results",
+            "network lab documentation diagram IP plan test results beginner lab"
+          ],
+          "practice": "1. رتب مجلد network-project وضع فيه النسخة النهائية .pkt ورسمًا أو وصفًا واضحًا للتوصيلات وجدول IP وVLAN وGateway وDNS.\n2. اكتب README مختصرة تشرح فتح الملف وترتيب الاختبارات واسم السياسة ومكان تطبيقها. أرفق نتائج Allow وDeny ومثال عطل أصلحته.\n3. أغلق Packet Tracer ثم افتح النسخة النهائية ونفّذ اختبار HTTP مسموحًا واختبار GUEST إلى STAFF ممنوعًا. تحقق أن التقرير يطابق الملف المحفوظ، لا نسخة أخرى.",
+          "review": "ما المعلومات التي يحتاجها شخص آخر لإعادة اختبار السياسة؟ وكيف تمنع اختلاف التقرير عن الملف الذي تسلمه؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "مشروع التحليل: اختبار الحدود وكتابة الاستنتاج",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "سنختبر الأداة قرب الحدود التي قد تخفي خطأ: أربع محاولات مقابل خمس، وحدث عند نهاية النافذة تمامًا، وملف Header فقط، وصف غير صالح. هذه الحالات تكشف أخطاء لا تظهر في المثال الأساسي.",
+            "بعد التحقق سنكتب استنتاجًا دقيقًا: رصد البرنامج عددًا محددًا من حالات الفشل في Dataset تدريبية ضمن فترة معلنة. لا نساوي ذلك بإثبات اختراق أو تحديد شخص وراء IP.",
+            "ستضيف قيود الأداة: نافذة ثابتة، صيغة CSV محددة، وعدم تحليل مصادر أخرى تلقائيًا. ذكر هذه الحدود يساعد على استخدام النتيجة بشكل صحيح ويوجه تحسين الشهر القادم."
+          ],
+          "objectives": [
+            "تثبت سلوك الأداة عند الحدود وتكتب استنتاجًا يتناسب مع الدليل."
+          ],
+          "concepts": [
+            "Boundary Cases",
+            "Invalid Rows",
+            "تنبيه دون جزم بالهجوم"
+          ],
+          "keywords": [
+            "شرح بالعربي Python log analyzer boundary testing security report limitations",
+            "Python log analyzer boundary testing security report limitations beginner lab"
+          ],
+          "practice": "1. أنشئ نسخًا صغيرة لاختبار 4 ثم 5 حالات failed، وحدث عند 09:05:00+00:00. يجب استبعاد حدث النهاية من نافذة [09:00,09:05)، مع بقائه ضمن إجمالي الأحداث الصالحة.\n2. اختبر Header فقط وملفًا غير موجود وصفًا ناقصًا. تحقق من الفرق بين صفر أحداث وفشل فتح الملف وصف مرفوض، ومن عدم إنشاء تقرير نجاح مضلل.\n3. اكتب analysis-report.md يتضمن المصدر والأعداد والتنبيه والتحقق اليدوي وحدود الأداة وخطوتين للتحقيق لو كانت البيانات حقيقية. احفظه مع Script وDataset والتقرير JSON.",
+          "review": "لماذا يبقى حدث خارج النافذة داخل العدد الكلي؟ وما الادعاء الذي لا تستطيع الأداة إثباته من هذه البيانات؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    },
+    {
+      "number": 60,
+      "sessions": [
+        {
+          "title": "اختبار نهاية الشهر: تشخيص الشبكة دون فيديو",
+          "subject": "الشبكات",
+          "description": [
+            "هذه ساعة قياس لما تستطيع تنفيذه بنفسك. ستعمل على نسخة المشروع وتختار عطلين من الدروس، ثم تستخدم الرسم والأوامر لمعرفة موضع الخلل وإصلاحه دون اتباع فيديو خطوة بخطوة.",
+            "قسّم الساعة إلى 10 دقائق لقراءة الرسم، و35 دقيقة للتشخيص والإصلاح، و15 دقيقة لإعادة اختبار الخدمة والسياسة. يمكنك الرجوع إلى قائمة الأوامر بعد محاولة واضحة مع تسجيل ما احتجت إليه.",
+            "النجاح هنا يعني تفسير السبب وإثبات الإصلاح مع بقاء المنع المطلوب. إذا لم تنجح في خطوة، حدد المهارة التي تحتاج تدريبًا ثم أعد المهمة؛ لا تعتبر مرور الوقت وحده دليل إتقان."
+          ],
+          "objectives": [
+            "تشخص عطلين وتثبت سلامة الخدمة والسياسة بعد إصلاحهما."
+          ],
+          "concepts": [
+            "VLAN وRouting",
+            "DNS وACL",
+            "أدلة قبل وبعد"
+          ],
+          "keywords": [
+            "شرح بالعربي CCNA beginner troubleshooting practical VLAN routing DNS ACL",
+            "CCNA beginner troubleshooting practical VLAN routing DNS ACL beginner lab"
+          ],
+          "practice": "1. اختر عطل DNS وعطل VLAN أو ACL من اليوم 59، وضع كل واحد في نسخة مستقلة بعد حفظ الحالة السليمة.\n2. لكل عطل دوّن الفرضية والأمر والنتيجة والسبب والإصلاح. حاول أولًا من فهمك، ثم سجّل أي مرجع اضطررت لاستخدامه.\n3. امنح نفسك نقطة لكل من خمس مهام: إعداد العميل، تشخيص DNS، قراءة VLAN أو Trunk، تفسير ACL، وإثبات السماح والمنع. كرر أي مهمة لم تستطع شرحها حتى لو نجح الاتصال مصادفة.",
+          "review": "أي نتيجة في اختباراتك تثبت السبب الفعلي؟ وما المهارة التي ستعيدها إذا احتجت نسخ الحل كاملًا؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "اختبار نهاية الشهر: شرح رحلة اتصال وحمايته",
+          "subject": "الشبكات",
+          "description": [
+            "ستشرح رحلة جهاز Guest إلى Portal كأنك تشرحها لشخص مبتدئ. ابدأ بإعداد IP ثم تحويل الاسم، ثم اتصال الخدمة والمسار عبر Switch وRouter والقواعد التي تسمح به.",
+            "بعدها قارن المثال بـ HTTPS على الإنترنت: أين يدخل TLS وما الذي يتغير إذا كانت الخدمة تستخدم بروتوكولًا آخر مثل HTTP/3. يكفي فهم الحدود دون دراسة تفاصيل بروتوكولات جديدة في هذه الساعة.",
+            "هذا الاختبار يقيس ربط المفاهيم ببعضها. المطلوب رسم يمكن تتبعه وأمثلة من مختبرك، مع اعتراف واضح بما لم تختبره مثل Stateful Firewall أو سياسة IPv6."
+          ],
+          "objectives": [
+            "تشرح اتصالًا كاملًا وتربط كل مرحلة بأداة فحص أو قاعدة وصول."
+          ],
+          "concepts": [
+            "DNS ثم TCP ثم HTTP أو TLS",
+            "دور VLAN وRouter",
+            "حدود الأدوات والسياسة"
+          ],
+          "keywords": [
+            "شرح بالعربي network packet journey DNS TCP routing firewall explanation",
+            "network packet journey DNS TCP routing firewall explanation beginner lab"
+          ],
+          "practice": "1. ارسم رحلة http://portal.lab.test من Guest، واكتب وظيفة DHCP وDNS وMAC وGateway وTCP Port 80 في الموضع المناسب.\n2. اختر Packet أو نتيجة أمر لكل من DNS والوصول إلى الخدمة وACL. اشرح لماذا تسمح السياسة بالصفحة وتمنع الوصول غير المطلوب إلى STAFF.\n3. سجّل شرحًا صوتيًا لنفسك أو اكتبه في صفحة، ثم حدّد خمس كلمات استخدمتها وتأكد أنك تستطيع شرحها بمثال: Trunk وNext Hop وStateful وBaseline وEvidence.",
+          "review": "هل تستطيع شرح كل سهم في رسمك دون الاكتفاء باسم بروتوكول؟ وأين توجد فجوة تحتاج مراجعة قبل الشهر التالي؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "تقييم الشهر الثاني واختيار نقاط التقوية",
+          "subject": "الأمن السيبراني",
+          "description": [
+            "اجمع مشروع الشبكة ومحلل Logs والتقرير في مكان واحد. أنت الآن تقيس مهارات تأسيس عملية: تشغيل شبكة صغيرة، تقييد وصول محدد، قراءة حركة، وفهم ملف أحداث وإنتاج نتيجة قابلة للتحقق.",
+            "هذه مرحلة في طريق التخصص، وليست وعدًا بأن شهرين يجعلانك خبيرًا في كل الأمن السيبراني. التقدم الحقيقي يظهر عندما تستطيع تنفيذ المهمة وشرح سببها والتحقق منها على مثال جديد.",
+            "سنختتم بخريطة نقاط قوة وثلاث نقاط تحتاج تقوية. الشهر التالي يبنى على هذه النتائج؛ إذا بقيت مهارة أساسية ضعيفة، نعطيها تمرينًا إضافيًا قبل زيادة تعقيد الموضوع."
+          ],
+          "objectives": [
+            "تقيم مخرجاتك بمهام قابلة للإعادة وتحدد احتياجات التعلم التالية."
+          ],
+          "concepts": [
+            "Linux وPython",
+            "تحليل الدليل",
+            "خطوة تالية مبنية على الأداء"
+          ],
+          "keywords": [
+            "شرح بالعربي cybersecurity beginner portfolio network log analysis skills assessment",
+            "cybersecurity beginner portfolio network log analysis skills assessment beginner lab"
+          ],
+          "practice": "1. أعد تشغيل analyze.py على project-events.csv وتحقق من الأعداد والتنبيه وحدود النافذة. اشرح Function واحدة بنفسك وسبب رفض صف غير صالح.\n2. قيّم خمس مهارات من 0 إلى 2: ملفات Linux وصلاحياتها، قراءة CSV والتحقق، عد الأحداث، فهم التنبيه وحدوده، وكتابة تقرير بالدليل. 0 تعني لا أستطيع، و1 بمساعدة، و2 باستقلال.\n3. اكتب ثلاث نقاط تقوية مع تمرين ونتيجة متوقعة لكل واحدة. احتفظ بتقرير التقييم وملفات المشروع؛ إذا حصلت على 0 في قراءة البيانات أو التحقق من النتيجة، أعد تلك المهمة قبل بدء موضوع أكثر تقدمًا.",
+          "review": "ما الذي تستطيع تنفيذه وحدك الآن؟ وما الدليل الذي ستقدمه على تقدمك بدل عدد الساعات فقط؟",
+          "english": [],
+          "resources": []
+        },
+        {
+          "title": "دراسة اللغة الإنجليزية",
+          "subject": "اللغة الإنجليزية"
+        }
+      ]
+    }
+  ]
+}

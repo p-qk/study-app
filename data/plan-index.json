@@ -1,3 +1,6 @@
 {
-  "months": ["month-01.json"]
+  "months": [
+    "month-01.json",
+    "month-02.json"
+  ]
 }
