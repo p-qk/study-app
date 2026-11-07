@@ -19,6 +19,9 @@
         sessions.some(function (session, index) {
           if (!session || session.subject !== subjects[index] || !nonEmpty(session.title)) return true;
           if (index === 3) return false;
+          if (session.description !== undefined &&
+              (!Array.isArray(session.description) || session.description.length < 3 ||
+                !session.description.every(nonEmpty))) return true;
           return !textFields.every(function (key) { return nonEmpty(session[key]); }) ||
             !listFields.every(function (key) {
               return Array.isArray(session[key]) && session[key].every(nonEmpty);

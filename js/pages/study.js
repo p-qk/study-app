@@ -18,6 +18,12 @@
     details.appendChild(el("summary", (index + 1) + ". " + session.title));
     details.appendChild(el("p", session.subject + " · " + session.minutes + " دقيقة", "muted"));
     if (session.trackingOnly) return details;
+    if (session.description?.length) {
+      details.appendChild(el("h3", "شرح الجلسة"));
+      session.description.forEach(function (paragraph) {
+        details.appendChild(el("p", paragraph));
+      });
+    }
     [
       ["ماذا ستستفيد؟", session.objectives],
       ["ماذا تدرس في هذه الساعة؟", session.concepts],

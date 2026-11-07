@@ -82,7 +82,14 @@
                     checkbox.disabled = false;
                   }
                 });
-                lab.append(el("h3", session.title), el("p", session.subject, "muted"), description, label);
+                const instructions = el("details", "");
+                instructions.appendChild(el("summary", session.title));
+                instructions.appendChild(el("p", session.subject, "muted"));
+                (session.description || []).forEach(function (paragraph) {
+                  instructions.appendChild(el("p", paragraph));
+                });
+                instructions.append(el("h4", "ما تنفّذه في المختبر"), description);
+                lab.append(instructions, label);
                 dayGroup.appendChild(lab);
               });
               group.appendChild(dayGroup);
