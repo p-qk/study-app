@@ -102,7 +102,8 @@
 
       // ---------- النسخ الاحتياطي ----------
       const backup = panel("النسخ الاحتياطي");
-      backup.appendChild(el("p", "muted", "تصدير بياناتك إلى ملف JSON واستيرادها: يُفعَّل في المرحلة 11."));
+      backup.appendChild(el("p", "muted", "نسخة من الجلسات والمختبرات المكتملة المحفوظة على هذا الجهاز."));
+      window.StudyBackup.mount(backup, ctx.user.id);
       container.appendChild(backup);
 
       return function cleanup() {
